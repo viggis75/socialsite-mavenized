@@ -32,54 +32,58 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package com.sun.socialsite.pojos;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Date;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerIndex;
-import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret;
+package com.sun.socialsite.web.rest.model;
+
+import com.sun.socialsite.pojos.Group;
 
 
 /**
- * For persisting a BasicOAuthStoreConsumerKeyAndSecret.
- * Part of SocialSite OAuth Consumer implementation.
+ * Simple group model object with properties needed for ViewerRelationship.
  */
-@Entity
-@Table(name="ss_oauthconsumer")
-public class OAuthConsumerRecord implements Serializable {
+public class GroupWrapper {
 
-    @Id
-    private int id;
-    private String keyName;
-    private String consumerKey;
-    private String consumerSecret;
-    private String callbackUrl;
-    private BasicOAuthStoreConsumerKeyAndSecret.KeyType keyType;
-    private Timestamp updated;
+    private String displayName = null;
+    private String handle = null;
 
-    public OAuthConsumerRecord() {}
-
-    public OAuthConsumerRecord(
-        BasicOAuthStoreConsumerIndex index, BasicOAuthStoreConsumerKeyAndSecret data) {
-        this.id = index.hashCode();
-        update(data);
+    public GroupWrapper() {
+        super();
     }
 
-    public BasicOAuthStoreConsumerKeyAndSecret getBasicOAuthStoreConsumerKeyAndSecret() {
-        return new BasicOAuthStoreConsumerKeyAndSecret(consumerKey, consumerSecret, keyType, keyName, callbackUrl);
+    public GroupWrapper(Group group) {
+        super();
+        this.handle = group.getHandle();
+        this.displayName = group.getName();
     }
 
-    public void update(BasicOAuthStoreConsumerKeyAndSecret data) {
-        this.keyName        = data.getKeyName();
-        this.consumerKey    = data.getConsumerKey();
-        this.consumerSecret = data.getConsumerSecret();
-        this.keyType        = data.getKeyType();
-        this.callbackUrl    = data.getCallbackUrl();
-        this.updated = new Timestamp(new Date().getTime());
+    public String getDisplayName() {
+        return displayName;
     }
+
+    public String getHandle() {
+        return handle;
+    }
+
+    public String getId() {
+        return handle;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setHandle(String handle) {
+        this.handle = handle;
+    }
+
+    public void setId(String handle) {
+        this.handle = handle;
+    }
+
+    @Override
+    public boolean equals(Object group) {
+        GroupWrapper other = (GroupWrapper)group;
+        return getHandle().equals(other.getHandle());
+    }
+
 }
-

@@ -33,58 +33,67 @@
  * holder.
  */
 
-package com.sun.socialsite.business.platforms.eclipselink;
+package com.sun.socialsite.web.rest.opensocial;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.persistence.internal.databaseaccess.DatabaseCall;
-import org.eclipse.persistence.internal.expressions.ExpressionSQLPrinter;
-import org.eclipse.persistence.internal.expressions.SQLSelectStatement;
-import org.eclipse.persistence.platform.database.MySQLPlatform;
+import org.apache.shindig.auth.AnonymousSecurityToken;
+import org.apache.shindig.auth.SecurityToken;
+import org.apache.shindig.auth.SecurityTokenDecoder;
+import org.apache.shindig.auth.SecurityTokenException;
 
 
 /**
- * Extends MySQL4Platform to make use of LIMIT/OFFSET clauses in queries.
- *
- * Note: using SuppressWarnings annotation because superclass has deprecated methods.
- *
- * TODO: do we still need to override this to fix LIMIT handling in MySQL?
+ * A SecurityTokenDecoder implementation that "decodes" a token string by
+ * looking up the associated object from an in-memory map.
  */
-@SuppressWarnings(value="deprecation")
-public class ExtendedMySQL4Platform extends MySQLPlatform {
+public class SocialSiteTokenDecoder implements SecurityTokenDecoder {
 
-    private static Log log = LogFactory.getLog(ExtendedMySQL4Platform.class);
+    private static Log log = LogFactory.getLog(SocialSiteTokenDecoder.class);
 
-    public ExtendedMySQL4Platform() {
-        super();
+    private static Map<String, SecurityToken> tokens = new ConcurrentHashMap<String, SecurityToken>();
+
+
+    public static void addToken(SecurityToken token) {
+        SocialSiteToken sstoken = (SocialSiteToken)token;
+        tokens.put(sstoken.toSerialForm(), token);
     }
 
-    @Override
-    public void printSQLSelectStatement(DatabaseCall call, ExpressionSQLPrinter printer, SQLSelectStatement statement) {
 
-        String s;
-        int firstResult = statement.getQuery().getFirstResult();
-        int maxRows = statement.getQuery().getMaxRows();
+    public static void removeToken(SecurityToken token) {
+        SocialSiteToken sstoken = (SocialSiteToken)token;
+        tokens.remove(sstoken.toSerialForm());
+    }
 
-        s = String.format("ExtendedMySQL4Platform.printSQLSelectStatement Inputs: firstResult=%d maxRows=%d]", firstResult, maxRows);
-        log.debug(s);
 
-        call.setFields(statement.printSQL(printer));
+    /**
+     *
+     */
+    public SocialSiteTokenDecoder() {
+        log.trace("Entered Constructor");
+    }
 
-        if (maxRows > 0) {
-            printer.printString(" LIMIT ");
-            printer.printString(Integer.toString(maxRows - firstResult));
-            call.setIgnoreFirstRowMaxResultsSettings(true);
+
+    /**
+     * {@inheritDoc}
+     */
+    public SecurityToken createToken(Map<String, String> parameters) throws SecurityTokenException {
+
+        String tokenString = parameters.get(SecurityTokenDecoder.SECURITY_TOKEN_NAME);
+        SecurityToken token = null;
+
+        if (tokenString == null || tokenString.length() == 0) {
+            token = new AnonymousSecurityToken();
+            log.debug("returning anonymous token " + token);
+        } else {
+            token = tokens.get(tokenString);
+            log.debug("found token " + token);
         }
 
-        if (firstResult > 0) {
-            printer.printString(" OFFSET ");
-            printer.printString(Integer.toString(firstResult));
-            call.setIgnoreFirstRowMaxResultsSettings(true);
-        }
+        return token;
 
-        s = String.format("ExtendedMySQL4Platform.printSQLSelectStatement Returning: %s", printer.getWriter().toString());
-        log.debug(s);
     }
 
 }

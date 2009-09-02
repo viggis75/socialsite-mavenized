@@ -40,8 +40,6 @@ import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerIndex;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreTokenIndex;
 import org.apache.shindig.gadgets.oauth.OAuthStore;
-import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
-import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
 
 
 /**
@@ -86,7 +84,7 @@ public class JPAOAuthStore implements OAuthStore {
         }
 
         BasicOAuthStoreConsumerKeyAndSecret kas = new BasicOAuthStoreConsumerKeyAndSecret(
-                consumerKey, consumerSecret, keyType, null);
+                consumerKey, consumerSecret, keyType, null, null);
 
         BasicOAuthStoreConsumerIndex index = new BasicOAuthStoreConsumerIndex();
         index.setGadgetUri(gadgetUri);
@@ -150,7 +148,7 @@ public class JPAOAuthStore implements OAuthStore {
             consumer = new OAuthConsumer(null, cks.getConsumerKey(), cks.getConsumerSecret(), provider);
             consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, OAuth.HMAC_SHA1);
         }
-        return new ConsumerInfo(consumer, cks.getKeyName());
+        return new ConsumerInfo(consumer, cks.getKeyName(), null );
     }
 
     private BasicOAuthStoreTokenIndex makeBasicOAuthStoreTokenIndex(

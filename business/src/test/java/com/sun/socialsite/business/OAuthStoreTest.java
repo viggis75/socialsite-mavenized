@@ -32,54 +32,75 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package com.sun.socialsite.pojos;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Date;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+package com.sun.socialsite.business;
+
+import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.business.impl.JPAOAuthStore;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerIndex;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret;
+import org.apache.shindig.gadgets.oauth.BasicOAuthStoreTokenIndex;
+import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
 
 
 /**
- * For persisting a BasicOAuthStoreConsumerKeyAndSecret.
- * Part of SocialSite OAuth Consumer implementation.
+ * Test App-related business operations.
  */
-@Entity
-@Table(name="ss_oauthconsumer")
-public class OAuthConsumerRecord implements Serializable {
+public class OAuthStoreTest extends TestCase {
+    public static Log log = LogFactory.getLog(OAuthStoreTest.class);
 
-    @Id
-    private int id;
-    private String keyName;
-    private String consumerKey;
-    private String consumerSecret;
-    private String callbackUrl;
-    private BasicOAuthStoreConsumerKeyAndSecret.KeyType keyType;
-    private Timestamp updated;
-
-    public OAuthConsumerRecord() {}
-
-    public OAuthConsumerRecord(
-        BasicOAuthStoreConsumerIndex index, BasicOAuthStoreConsumerKeyAndSecret data) {
-        this.id = index.hashCode();
-        update(data);
+    public void setUp() throws Exception {
+        TestUtils.setupSocialSite();
     }
 
-    public BasicOAuthStoreConsumerKeyAndSecret getBasicOAuthStoreConsumerKeyAndSecret() {
-        return new BasicOAuthStoreConsumerKeyAndSecret(consumerKey, consumerSecret, keyType, keyName, callbackUrl);
+    public static Test suite() {
+        return new TestSuite(OAuthStoreTest.class);
     }
 
-    public void update(BasicOAuthStoreConsumerKeyAndSecret data) {
-        this.keyName        = data.getKeyName();
-        this.consumerKey    = data.getConsumerKey();
-        this.consumerSecret = data.getConsumerSecret();
-        this.keyType        = data.getKeyType();
-        this.callbackUrl    = data.getCallbackUrl();
-        this.updated = new Timestamp(new Date().getTime());
+    public void tearDown() throws Exception {
+    }
+
+    public void testOAuthStoreCRUD() throws Exception {
+
+        try {
+            JPAOAuthStore store =
+                (JPAOAuthStore)Factory.getSocialSite().getOAuthStore();
+
+            BasicOAuthStoreConsumerIndex providerKey =
+                new BasicOAuthStoreConsumerIndex();
+            providerKey.setGadgetUri("http://example.com/gadget.xml");
+            providerKey.setServiceName("testservice");
+
+            BasicOAuthStoreConsumerKeyAndSecret keyAndSecret =
+                new BasicOAuthStoreConsumerKeyAndSecret("aaa", "bbb",
+                BasicOAuthStoreConsumerKeyAndSecret.KeyType.HMAC_SYMMETRIC, "keyname");
+
+            store.consumerInfosPut(providerKey, keyAndSecret);
+
+            assertNotNull(store.consumerInfosGet(providerKey));
+
+
+            BasicOAuthStoreTokenIndex index = new BasicOAuthStoreTokenIndex();
+            TokenInfo info = new TokenInfo("aaa", "bbb", "ccc", 0L);
+
+            store.tokensPut(index, info);
+
+            assertNotNull(store.tokensGet(index));
+            
+
+        } catch (Exception e) {
+            log.error("Unexpected Exception", e);
+            throw e;
+
+        } finally {
+            TestUtils.endSession(false);
+        }
+
+        log.info("END");
     }
 }
-
