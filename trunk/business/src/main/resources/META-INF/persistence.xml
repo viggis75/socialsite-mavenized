@@ -36,7 +36,8 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
 
     <persistence-unit name="SocialSite_PU" transaction-type="RESOURCE_LOCAL">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <provider>${jpaProviderClass}</provider>
+        <!-- <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider> -->
         <!-- <provider>oracle.toplink.essentials.ejb.cmp3.EntityManagerFactoryProvider</provider> -->
         <!-- <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider> -->
         <!-- <provider>org.hibernate.ejb.HibernatePersistence</provider> -->
@@ -72,7 +73,8 @@
         <class>com.sun.socialsite.pojos.OAuthAccessorRecord</class>
     </persistence-unit>
     <persistence-unit name="SocialSite_PU_Standalone" transaction-type="RESOURCE_LOCAL">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <provider>${jpaProviderClass}</provider>
+        <!-- <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider> -->
         <!-- <provider>oracle.toplink.essentials.ejb.cmp3.EntityManagerFactoryProvider</provider> -->
         <!-- <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider> -->
         <!-- <provider>org.hibernate.ejb.HibernatePersistence</provider> -->
