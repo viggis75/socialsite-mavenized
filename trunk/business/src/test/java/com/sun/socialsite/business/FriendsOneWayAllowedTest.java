@@ -32,54 +32,31 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package com.sun.socialsite.pojos;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Date;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerIndex;
-import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret;
+package com.sun.socialsite.business;
+
+import com.sun.socialsite.business.impl.JPARelationshipManagerImpl;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 
 /**
- * For persisting a BasicOAuthStoreConsumerKeyAndSecret.
- * Part of SocialSite OAuth Consumer implementation.
+ * Test Friend-related business operations when one-way friends allowed
  */
-@Entity
-@Table(name="ss_oauthconsumer")
-public class OAuthConsumerRecord implements Serializable {
+public class FriendsOneWayAllowedTest extends FriendsTwoWayOnlyTest {
 
-    @Id
-    private int id;
-    private String keyName;
-    private String consumerKey;
-    private String consumerSecret;
-    private String callbackUrl;
-    private BasicOAuthStoreConsumerKeyAndSecret.KeyType keyType;
-    private Timestamp updated;
+    public void setUp() throws Exception {
+        super.setUp();
+        
+        twoWayOnly = false;
 
-    public OAuthConsumerRecord() {}
-
-    public OAuthConsumerRecord(
-        BasicOAuthStoreConsumerIndex index, BasicOAuthStoreConsumerKeyAndSecret data) {
-        this.id = index.hashCode();
-        update(data);
+        // override default two-way friends only setting
+        ((JPARelationshipManagerImpl)Factory.getSocialSite()
+            .getRelationshipManager()).setTwoWayRequiredForFriendship(twoWayOnly);
     }
 
-    public BasicOAuthStoreConsumerKeyAndSecret getBasicOAuthStoreConsumerKeyAndSecret() {
-        return new BasicOAuthStoreConsumerKeyAndSecret(consumerKey, consumerSecret, keyType, keyName, callbackUrl);
-    }
 
-    public void update(BasicOAuthStoreConsumerKeyAndSecret data) {
-        this.keyName        = data.getKeyName();
-        this.consumerKey    = data.getConsumerKey();
-        this.consumerSecret = data.getConsumerSecret();
-        this.keyType        = data.getKeyType();
-        this.callbackUrl    = data.getCallbackUrl();
-        this.updated = new Timestamp(new Date().getTime());
+    public static Test suite() {
+        return new TestSuite(FriendsOneWayAllowedTest.class);
     }
 }
-
