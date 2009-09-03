@@ -28,12 +28,12 @@ import org.apache.shindig.social.opensocial.spi.SocialSpiException;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
 import com.google.common.collect.Sets;
-
 import com.sun.socialsite.web.rest.opensocial.OpenSocialServices;
+
 import junit.framework.TestCase;
 
 import java.util.Collections;
-import org.apache.shindig.protocol.ResponseItem;
+
 import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.protocol.model.FilterOperation;
 import org.apache.shindig.protocol.model.SortOrder;
