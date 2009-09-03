@@ -183,4 +183,11 @@ public class FakeSocialSiteGadgetToken extends SocialSiteToken {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public String getAuthenticationMode() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String getActiveUrl() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
