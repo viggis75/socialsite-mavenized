@@ -2,17 +2,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <artifactId>socialsite</artifactId>
         <groupId>com.sun</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+
     <groupId>com.sun.socialsite</groupId>
     <artifactId>business</artifactId>
-    <version>1.0-SNAPSHOT</version>
+
+    <packaging>jar</packaging>
+
     <name>business</name>
     <url>http://maven.apache.org</url>
+
     <dependencies>
 
         <dependency>
@@ -89,7 +95,17 @@
     </dependencies>
 
     <build>
+
         <plugins>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <includeEmptyDirs>true</includeEmptyDirs>
+                </configuration>
+            </plugin>
+            <!-- catalina.base is hardcoded in one of resources and it
+             causes log4j to throw an exception if it's not set -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
@@ -101,19 +117,135 @@
                     </systemProperties>
                 </configuration>
             </plugin>
+
+            <!-- the following launches the database then creates the schema
+             then when the tests are done, it will get rid of the database -->
+            <!-- TODO see if there are more appropriate phases -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                        <version>1.5</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.sun.socialsite</groupId>
+                        <artifactId>test-utils</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
+
+                <executions>
+                    <execution>
+                        <id>gen-db-scripts</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+
+                                <taskdef name="texen"
+                                         classname="org.apache.velocity.texen.ant.TexenTask"
+                                         classpathref="maven.compile.classpath"/>
+
+                                <texen
+                                        controlTemplate="control.vm"
+                                        contextProperties="${project.build.outputDirectory}/sql/dbscripts.properties"
+                                        templatePath="${project.build.outputDirectory}/sql"
+                                        outputDirectory="${project.build.outputDirectory}/sql"
+                                        outputFile="README.txt"/>
+
+                            </tasks>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>startdb</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <taskdef name="startdb" classname="com.sun.socialsite.ant.StartDerbyTask"
+                                         classpathref="maven.compile.classpath"/>
+                                <startdb database="${project.build.testOutputDirectory}/derby-system/socialsite"
+                                         port="7407"></startdb>
+                            </tasks>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>stopdb</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <taskdef name="stopdb" classname="com.sun.socialsite.ant.StopDerbyTask"
+                                         classpathref="maven.compile.classpath"/>
+                                <stopdb port="7407"></stopdb>
+                                <delete dir="${project.build.testOutputDirectory}/derby-system" />
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sql-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.derby</groupId>
+                        <artifactId>derby</artifactId>
+                        <version>10.4.2.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.derby</groupId>
+                        <artifactId>derbyclient</artifactId>
+                        <version>10.4.2.0</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>initdb</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <driver>${jdbcDriverClass}</driver>
+                            <url>jdbc:derby://localhost:7407/socialsite;create=true</url>
+                            <username>app</username>
+                            <password>app</password>
+                            <autocommit>true</autocommit>
+                            <srcFiles>
+                                <srcFile>${project.build.outputDirectory}/sql/derby/createdb.sql</srcFile>
+                            </srcFiles>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
             </testResource>
         </testResources>
+
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
+
     </build>
 
     <profiles>
@@ -134,11 +266,10 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.2</version>
                         <executions>
                             <execution>
+                                <id>openjpa-enhance</id>
                                 <phase>process-classes</phase>
                                 <configuration>
                                     <tasks>
@@ -171,7 +302,7 @@
                 </dependency>
             </dependencies>
             <properties>
-                <jdbcDriverClass>org.apache.derby.jdbc.EmbeddedDriver</jdbcDriverClass>
+                <jdbcDriverClass>org.apache.derby.jdbc.ClientDriver</jdbcDriverClass>
             </properties>
         </profile>
     </profiles>
