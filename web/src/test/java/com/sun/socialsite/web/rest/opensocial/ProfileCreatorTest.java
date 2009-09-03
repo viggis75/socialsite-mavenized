@@ -46,6 +46,7 @@ import com.sun.socialsite.web.rest.config.SocialSiteGuiceModule;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
@@ -118,10 +119,10 @@ public class ProfileCreatorTest extends TestCase {
              */
             Profile bugs = profileManager.getProfileByUserId("bugs_bunny");
             assertNotNull("A profile with userId='bugs_bunny' should exist", bugs);
-            assertEquals("Bugs Bunny", bugs.getDisplayName());
-            assertEquals("Bugs", bugs.getFirstName());
-            assertEquals("Bunny", bugs.getLastName());
-            assertEquals("bugs.bunny@cartoons.com", bugs.getPrimaryEmail());
+            Assert.assertEquals("Bugs Bunny", bugs.getDisplayName());
+            Assert.assertEquals("Bugs", bugs.getFirstName());
+            Assert.assertEquals("Bunny", bugs.getLastName());
+            Assert.assertEquals("bugs.bunny@cartoons.com", bugs.getPrimaryEmail());
             TestUtils.endSession(true);
 
             /*
@@ -129,10 +130,10 @@ public class ProfileCreatorTest extends TestCase {
              */
             Profile daffy = profileManager.getProfileByUserId("daffy_duck");
             assertNotNull("A profile with userId='daffy_duck' should exist", daffy);
-            assertEquals("Daffy Duck", daffy.getDisplayName());
-            assertEquals("Daffy", daffy.getFirstName());
-            assertEquals("Duck", daffy.getLastName());
-            assertEquals("daffy.duck@cartoons.com", daffy.getPrimaryEmail());
+            Assert.assertEquals("Daffy Duck", daffy.getDisplayName());
+            Assert.assertEquals("Daffy", daffy.getFirstName());
+            Assert.assertEquals("Duck", daffy.getLastName());
+            Assert.assertEquals("daffy.duck@cartoons.com", daffy.getPrimaryEmail());
             TestUtils.endSession(true);
 
         } finally {
