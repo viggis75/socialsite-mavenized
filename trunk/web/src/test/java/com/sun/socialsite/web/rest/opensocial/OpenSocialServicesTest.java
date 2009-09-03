@@ -187,7 +187,7 @@ public class OpenSocialServicesTest extends JsonDbOpensocialServiceTest {
                 
                 // esure ACTIVITY_ID is assigned to a valid ACTIVITY_ID which 
                 // is owned by user canonical because that's what the test want.
-                if ("canonical".equals(userId)) ACTIVITY_ID = acontent.getId();
+                if ("canonical".equals(userId)) JsonDbOpensocialServiceTest.ACTIVITY_ID = acontent.getId();
             }
             Factory.getSocialSite().flush();
         }
