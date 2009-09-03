@@ -51,7 +51,7 @@ public class ProfileDefinition extends PropDefinition {
     private Map<String, String> ssByOs = new HashMap<String, String>();
     private Map<String, String> osBySs = new HashMap<String, String>();
 
-    private ProfileDefinition() throws SocialSiteException {
+    protected ProfileDefinition() throws SocialSiteException {
         super();
         init(this, getClass().getResourceAsStream("/profiledefs.xml"));
 

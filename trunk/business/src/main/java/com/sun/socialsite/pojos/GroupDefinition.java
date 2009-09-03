@@ -46,7 +46,7 @@ import com.sun.socialsite.SocialSiteException;
 @Singleton
 public class GroupDefinition extends PropDefinition {
 
-     private GroupDefinition() throws SocialSiteException {
+     protected GroupDefinition() throws SocialSiteException {
         super();
         init(this, getClass().getResourceAsStream("/group-profiledefs.xml"));
      }
