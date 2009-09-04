@@ -58,7 +58,8 @@ insert into ss_themes(id, destination, anchorcolor, bgcolor, bgimage, fontcolor)
 
 create table ss_configproperty (
     name         varchar(255) not null primary key,
-    value        $db.TEXT_SQL_TYPE
+    value        $db.TEXT_SQL_TYPE,
+    version      $db.TIMESTAMP_SQL_TYPE
 );
 
 create table ss_profile (
@@ -77,7 +78,8 @@ create table ss_profile (
     imagetype    varchar(255),
     enabled      $db.BOOLEAN_SQL_TYPE_TRUE,
     created      $db.TIMESTAMP_SQL_TYPE not null,
-    updated      $db.TIMESTAMP_SQL_TYPE not null
+    updated      $db.TIMESTAMP_SQL_TYPE,
+    version      $db.TIMESTAMP_SQL_TYPE
 );
 alter table ss_profile add constraint ss_profile_c1 unique(userid);
 create index ss_profile_index1 on ss_profile(lastname asc, firstname asc, middlename asc);
@@ -95,7 +97,8 @@ create table ss_profileprop (
     vislevel   integer not null,
     somegroups varchar(512),
     created    $db.TIMESTAMP_SQL_TYPE not null,
-    updated    $db.TIMESTAMP_SQL_TYPE not null
+    updated    $db.TIMESTAMP_SQL_TYPE,
+    version    $db.TIMESTAMP_SQL_TYPE
 );
 alter table ss_profileprop add constraint ss_profileprop_c1 unique(profileid, name);
 create index ss_profileprop_index1 on ss_profileprop(profileid);
@@ -109,7 +112,8 @@ create table ss_groupprop (
     vistype    varchar(10) not null,
     vislevel   integer not null,
     created    $db.TIMESTAMP_SQL_TYPE not null,
-    updated    $db.TIMESTAMP_SQL_TYPE not null
+    updated    $db.TIMESTAMP_SQL_TYPE not null,
+    version    $db.TIMESTAMP_SQL_TYPE
 );
 alter table ss_groupprop add constraint ss_groupprop_c1 unique(groupid, name);
 create index ss_groupprop_index1 on ss_groupprop(groupid);
@@ -122,7 +126,8 @@ create table ss_userrel (
     level          integer not null,
     howknow        varchar(512),
     created        $db.TIMESTAMP_SQL_TYPE not null,
-    updated        $db.TIMESTAMP_SQL_TYPE not null
+    updated        $db.TIMESTAMP_SQL_TYPE,
+    version        $db.TIMESTAMP_SQL_TYPE
 );
 alter table ss_userrel add constraint ss_userrel_c1 unique(fromprofileid, toprofileid);
 create index ss_userrel_index1 on ss_userrel(fromprofileid);
@@ -140,7 +145,8 @@ create table ss_activity (
     profileid      varchar(48) not null,
     groupid        varchar(48),
     created        $db.TIMESTAMP_SQL_TYPE not null,
-    updated        $db.TIMESTAMP_SQL_TYPE not null
+    updated        $db.TIMESTAMP_SQL_TYPE,
+    version        $db.TIMESTAMP_SQL_TYPE
 );
 create index ss_activity_index1 on ss_activity(profileid);
 
@@ -156,7 +162,8 @@ create table ss_templateparam (
     id             varchar(48) not null primary key,
     activityid     varchar(48) not null,
     name           $db.TEXT_SQL_TYPE,
-    value          $db.TEXT_SQL_TYPE
+    value          $db.TEXT_SQL_TYPE,
+    version        $db.TIMESTAMP_SQL_TYPE
 );
 
 create table ss_socialrequest (
@@ -169,7 +176,8 @@ create table ss_socialrequest (
     groupid       varchar(48),
     requesttype   varchar(48) not null,
     status        varchar(48) not null,
-    created       $db.TIMESTAMP_SQL_TYPE not null
+    created       $db.TIMESTAMP_SQL_TYPE not null,
+    version       $db.TIMESTAMP_SQL_TYPE
 );
 #* Many versions of Derby cannot support unique constraints with nullable fields *#
 #if ($db.DBTYPE != "DERBY")
@@ -183,7 +191,8 @@ create table ss_grouprel (
     groupid        varchar(48) not null,
     admin          $db.BOOLEAN_SQL_TYPE,
     created        $db.TIMESTAMP_SQL_TYPE not null,
-    updated        $db.TIMESTAMP_SQL_TYPE not null
+    updated        $db.TIMESTAMP_SQL_TYPE,
+    version        $db.TIMESTAMP_SQL_TYPE
 );
 alter table ss_grouprel add constraint ss_grouprel_c1 unique(profileid, relcode, groupid);
 create index ss_grouprel_index1 on ss_grouprel(profileid);
@@ -200,7 +209,8 @@ create table ss_content (
     desctype     varchar(48),
     description  varchar(255) not null,
     created      $db.TIMESTAMP_SQL_TYPE not null,
-    updated      $db.TIMESTAMP_SQL_TYPE not null,
+    updated      $db.TIMESTAMP_SQL_TYPE,
+    version      $db.TIMESTAMP_SQL_TYPE,
     content      $db.TEXT_SQL_TYPE,
     contenttype  varchar(48),
     visibility   varchar(48),
@@ -231,7 +241,8 @@ create table ss_contextrule (
     reject  varchar(512),
     source  varchar(48),
     created $db.TIMESTAMP_SQL_TYPE not null,
-    updated $db.TIMESTAMP_SQL_TYPE not null
+    updated $db.TIMESTAMP_SQL_TYPE,
+    version $db.TIMESTAMP_SQL_TYPE
 );
 create index ss_contextrule_index1 on ss_contextrule(source);
 
@@ -246,7 +257,8 @@ create table ss_group (
     image          blob(512000),
     imagetype      varchar(255),
     created        $db.TIMESTAMP_SQL_TYPE not null,
-    updated        $db.TIMESTAMP_SQL_TYPE not null
+    updated        $db.TIMESTAMP_SQL_TYPE,
+    version        $db.TIMESTAMP_SQL_TYPE
 );
 alter table ss_group add constraint ss_group_c1 unique(handle);
 create index ss_group_index1 on ss_group(created asc);
@@ -277,7 +289,8 @@ create table ss_app (
     authoremail            varchar(255),
     authorlink             varchar(255),
     created                $db.TIMESTAMP_SQL_TYPE not null,
-    updated                $db.TIMESTAMP_SQL_TYPE not null
+    updated                $db.TIMESTAMP_SQL_TYPE,
+    version                $db.TIMESTAMP_SQL_TYPE
 );
 alter table ss_app add constraint ss_app_c1 unique(url);
 create index ss_app_index1 on ss_app(title asc);
@@ -290,7 +303,8 @@ create table ss_appdata (
     name                varchar(255) not null,
     value               $db.TEXT_SQL_TYPE not null,
     created             $db.TIMESTAMP_SQL_TYPE not null,
-    updated             $db.TIMESTAMP_SQL_TYPE not null
+    updated             $db.TIMESTAMP_SQL_TYPE,
+    version             $db.TIMESTAMP_SQL_TYPE
 );
 #* Many versions of Derby cannot support unique constraints with nullable fields *#
 #if ($db.DBTYPE != "DERBY")
@@ -307,7 +321,8 @@ create table ss_appreg (
     status        varchar(48),
     timeout       integer,
     created       $db.TIMESTAMP_SQL_TYPE not null,
-    updated       $db.TIMESTAMP_SQL_TYPE not null,
+    updated       $db.TIMESTAMP_SQL_TYPE,
+    version       $db.TIMESTAMP_SQL_TYPE,
     servicename   varchar(48),
     consumerkey   varchar(48),
     consumersecret  varchar(48)
@@ -322,7 +337,8 @@ create table ss_appinstance (
     collection     varchar(48),
     position       varchar(100),
     created        $db.TIMESTAMP_SQL_TYPE not null,
-    updated        $db.TIMESTAMP_SQL_TYPE not null
+    updated        $db.TIMESTAMP_SQL_TYPE,
+    version        $db.TIMESTAMP_SQL_TYPE 
 );
 create index ss_appinstance_index1 on ss_appinstance(profileid);
 create index ss_appinstance_index2 on ss_appinstance(groupid);
@@ -337,7 +353,8 @@ create table ss_permissiongrant (
     name                varchar(48),
     actions             varchar(255),
     created             $db.TIMESTAMP_SQL_TYPE not null,
-    updated             $db.TIMESTAMP_SQL_TYPE not null
+    updated             $db.TIMESTAMP_SQL_TYPE not null,
+    version             $db.TIMESTAMP_SQL_TYPE
 );
 create index ss_permissiongrant_index1 on ss_permissiongrant(profileid);
 create index ss_permissiongrant_index2 on ss_permissiongrant(groupid);
@@ -345,10 +362,10 @@ create index ss_permissiongrant_index3 on ss_permissiongrant(appid);
 create index ss_permissiongrant_index4 on ss_permissiongrant(type);
 
 create table ss_ids (
-    name                varchar(48) not null primary key,
-    value               integer not null
+    nameCol                varchar(48) not null primary key,
+    valueCol               integer not null
 );
-insert into ss_ids(name, value) values('appinstance', 0);
+insert into ss_ids(nameCol, valueCol) values('appinstance', 0);
 
 create table ss_oauthentry (
     token       varchar(48) not null primary key,

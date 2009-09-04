@@ -38,6 +38,7 @@ package com.sun.socialsite.pojos;
 import com.sun.socialsite.business.impl.JPAListenerManagerImpl;
 import java.io.Serializable;
 import java.util.UUID;
+import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -45,6 +46,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -68,6 +71,9 @@ public class MessageContentState implements Serializable {
     private String messageid = null;
     private String status = null;
 
+    @Version
+    private Timestamp version;
+    
     public String getId() {
         return id;
     }

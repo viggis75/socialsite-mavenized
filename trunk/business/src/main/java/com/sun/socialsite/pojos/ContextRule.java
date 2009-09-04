@@ -96,7 +96,9 @@ public class ContextRule implements Serializable {
     private Timestamp created = new Timestamp(System.currentTimeMillis());
 
     @Version
-    private Timestamp updated = new Timestamp(created.getTime());
+    private Timestamp version;
+    
+    private Timestamp updated = new Timestamp(new Date().getTime());
 
     @Transient
     private static final String SEP = ",";

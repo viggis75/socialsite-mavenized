@@ -39,7 +39,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.business.AppManager;
 import com.sun.socialsite.business.Factory;
 import com.sun.socialsite.config.Config;
@@ -79,7 +79,7 @@ public class PropertiesHandlerTest extends TestCase {
         Injector injector = Guice.createInjector(new SocialSiteGuiceModule());
         converter = injector.getInstance(BeanJsonConverter.class);
 
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
         List<App> apps = Factory.getSocialSite().getAppManager().getApps(0, 1);
         token = new FakeSocialSiteGadgetToken();
         token.setAppId(apps.get(0).getId());
@@ -94,7 +94,7 @@ public class PropertiesHandlerTest extends TestCase {
 
         log.info("BEGIN");
 
-        Profile johndoe = TestUtils.setupPerson("john.doe", "John", "Doe", "John.Doe@mycompany.com");
+        Profile johndoe = Utils.setupPerson("john.doe", "John", "Doe", "John.Doe@mycompany.com");
 
         try {
 
@@ -120,7 +120,7 @@ public class PropertiesHandlerTest extends TestCase {
             assertEquals(Config.getProperty("socialsite.base.url"), response.getString("socialsite.base.url"));
 
         } finally {
-            if(johndoe != null) TestUtils.teardownPerson(johndoe.getUserId());
+            if(johndoe != null) Utils.teardownPerson(johndoe.getUserId());
         }
 
         log.info("END");

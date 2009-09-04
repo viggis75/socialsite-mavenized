@@ -35,7 +35,7 @@
 
 package com.sun.socialsite.business;
 
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.config.Config;
 import com.sun.socialsite.pojos.App;
 import com.sun.socialsite.pojos.AppInstance;
@@ -61,7 +61,7 @@ public class AppTest extends TestCase {
 
 
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
 
     }
 
@@ -145,7 +145,7 @@ public class AppTest extends TestCase {
             profile.setLastName("Doe");
             profile.setPrimaryEmail("john.f.doe@example.com");
             profileManager.saveProfile(profile);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // create and save app
             URL appURL = new URL("http://example.com/app.xml");
@@ -153,7 +153,7 @@ public class AppTest extends TestCase {
             app.setURL(appURL);
             app.setTitle("Test App #1");
             appManager.saveApp(app);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // verify it exists as created
             app = appManager.getAppByURL(appURL);
@@ -163,7 +163,7 @@ public class AppTest extends TestCase {
 
             appManager.setAppData(app, profile, "marsupial", "wombat");
             appManager.setAppData(app, profile, "smokestack", "lightning");
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // get app, verify properties
             app = appManager.getAppByURL(appURL);
@@ -171,7 +171,7 @@ public class AppTest extends TestCase {
             assertEquals(2, appManager.getAppData(app, profile).size());
 
             profileManager.removeProfile(profileManager.getProfileByUserId("john1"));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
         } catch (Exception e) {
             log.error("Unexpected Exception", e);
@@ -203,7 +203,7 @@ public class AppTest extends TestCase {
             profile.setLastName("Doe");
             profile.setPrimaryEmail("john.f.doe@example.com");
             profileManager.saveProfile(profile);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Find an existing App (for later use)
             List<App> apps = appManager.getApps(0, 1);
@@ -222,7 +222,7 @@ public class AppTest extends TestCase {
             appInstances.add(appInstance);
             storedProfile.setAppInstances(appInstances);
             profileManager.saveProfile(storedProfile);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // And make sure it's stored
             Profile storedProfile2 = profileManager.getProfileByUserId("john2");
@@ -230,22 +230,22 @@ public class AppTest extends TestCase {
             assertEquals(1, storedProfile2.getAppInstances().size());
             AppInstance storedAppInstance = storedProfile2.getAppInstances().iterator().next();
             assertEquals(storedAppInstance, appInstance);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Remove apps
             Profile storedProfile3 = profileManager.getProfileByUserId("john2");
             assertNotNull(storedProfile3);
             storedProfile3.setAppInstances(new ArrayList<AppInstance>());
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // And make sure they're gone
             Profile storedProfile4 = profileManager.getProfileByUserId("john2");
             assertNotNull(storedProfile4);
             assertEquals(0, storedProfile4.getAppInstances().size());
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             profileManager.removeProfile(profileManager.getProfileByUserId("john2"));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
         } catch (Exception e) {
             log.error("Unexpected Exception", e);

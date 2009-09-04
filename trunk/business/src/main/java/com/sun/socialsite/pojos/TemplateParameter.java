@@ -37,6 +37,7 @@ package com.sun.socialsite.pojos;
 
 import java.io.Serializable;
 import java.util.UUID;
+import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -45,6 +46,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 /**
  * Represents a single template param
@@ -64,6 +66,9 @@ public class TemplateParameter implements Serializable {
     private String name = null;
 
     private String value = null;
+
+    @Version
+    private Timestamp version;
 
     public String getId() {
         return this.id;

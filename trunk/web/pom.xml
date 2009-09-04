@@ -25,5 +25,10 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+      <dependency>
+          <groupId>com.sun.socialsite</groupId>
+          <artifactId>business</artifactId>
+          <version>${project.version}</version>
+      </dependency>
   </dependencies>
 </project>

@@ -35,7 +35,7 @@
 
 package com.sun.socialsite.business;
 
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.pojos.RelationshipRequest;
 import com.sun.socialsite.pojos.Profile;
 import com.sun.socialsite.pojos.SectionPrivacy;
@@ -58,7 +58,7 @@ public class SectionPrivacyTest extends TestCase {
 
 
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
     }
 
 
@@ -113,7 +113,7 @@ public class SectionPrivacyTest extends TestCase {
             priv.setVisibility(Profile.VisibilityType.FRIENDS);
             priv.setRelationshipLevel(1);
             profileManager.updateSectionPrivacy(bart, priv);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // verify that ralph can now see bart's job experience properties
             // that's 8 properties + 1 section privacy property
@@ -124,7 +124,7 @@ public class SectionPrivacyTest extends TestCase {
             // remove profiles
             profileManager.removeProfile(profileManager.getProfileByUserId("bart"));
             profileManager.removeProfile(profileManager.getProfileByUserId("ralph"));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
         } catch (Exception e) {
             log.error("ERROR", e);
@@ -158,7 +158,7 @@ public class SectionPrivacyTest extends TestCase {
         profile.setLastName(last);
         profile.setPrimaryEmail(email);
         profileManager.saveProfile(profile);
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         return profile;
 
@@ -171,12 +171,12 @@ public class SectionPrivacyTest extends TestCase {
         RelationshipManager fmgr = Factory.getSocialSite().getRelationshipManager();
 
         fmgr.requestRelationship(p1, p2, 1, "met at work");
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         p1 = profileManager.getProfile(p1.getId());
         List<RelationshipRequest> freqs = fmgr.getRelationshipRequestsByFromProfile(p1, 0, -1);
         fmgr.acceptRelationshipRequest(freqs.get(0), 1);
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
     }
 
@@ -191,7 +191,7 @@ public class SectionPrivacyTest extends TestCase {
         p.update(Profile.Format.FLAT, updates);
         profileManager.saveProfile(p);
         Factory.getSocialSite().flush();
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
     }
 
@@ -216,7 +216,7 @@ public class SectionPrivacyTest extends TestCase {
         profile.update(Profile.Format.FLAT, updates);
         profileManager.saveProfile(profile);
         Factory.getSocialSite().flush();
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
     }
 

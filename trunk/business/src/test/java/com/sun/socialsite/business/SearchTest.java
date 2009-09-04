@@ -35,7 +35,7 @@
 
 package com.sun.socialsite.business;
 
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.pojos.App;
 import com.sun.socialsite.pojos.Group;
 import com.sun.socialsite.pojos.Profile;
@@ -57,7 +57,7 @@ public class SearchTest extends TestCase {
 
 
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
     }
 
 
@@ -86,7 +86,7 @@ public class SearchTest extends TestCase {
             profile1.setLastName("Doe");
             profile1.setPrimaryEmail("john.f.doe@example.com");
             profileManager.saveProfile(profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(profileManager.getProfileByUserId("john"));
 
             Profile profile2 = new Profile();
@@ -96,7 +96,7 @@ public class SearchTest extends TestCase {
             profile2.setLastName("Doe");
             profile2.setPrimaryEmail("jane.e.doe@example.com");
             profileManager.saveProfile(profile2);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(profileManager.getProfileByUserId("jane"));
 
             int totalResults1 = searchManager.getTotalProfiles("john");
@@ -135,10 +135,10 @@ public class SearchTest extends TestCase {
             assertFalse(results5.contains(profile2));
 
             profileManager.removeProfile((profileManager.getProfileByUserId("john")));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             profileManager.removeProfile((profileManager.getProfileByUserId("jane")));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             assertNull(profileManager.getProfileByUserId("john"));
             assertNull(profileManager.getProfileByUserId("jane"));
@@ -181,7 +181,7 @@ public class SearchTest extends TestCase {
             app1.setTitle("XYZ App #123");
             app1.setDescription("XYZ App #123");
             appManager.saveApp(app1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(appManager.getAppByURL(app1URL));
 
             // create and save another app
@@ -191,7 +191,7 @@ public class SearchTest extends TestCase {
             app2.setTitle("ABC App #123");
             app2.setDescription("ABC App #123");
             appManager.saveApp(app2);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(appManager.getAppByURL(app2URL));
 
             int totalResults1 = searchManager.getTotalApps("XYZ");
@@ -209,10 +209,10 @@ public class SearchTest extends TestCase {
             assertTrue(results2.contains(app2));
 
             appManager.removeApp((appManager.getAppByURL(app1URL)));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             appManager.removeApp((appManager.getAppByURL(app2URL)));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             assertNull(appManager.getAppByURL(app1URL));
             assertNull(appManager.getAppByURL(app2URL));
@@ -252,7 +252,7 @@ public class SearchTest extends TestCase {
             profile1.setLastName("Doe");
             profile1.setPrimaryEmail("john.f.doe@example.com");
             profileManager.saveProfile(profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(profileManager.getProfileByUserId("john"));
 
             Group group1 = new Group();
@@ -261,7 +261,7 @@ public class SearchTest extends TestCase {
             group1.setDescription("commonDescription");
             profile1 = profileManager.getProfile(profile1.getId());
             groupManager.createGroup(group1, profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(groupManager.getGroupByHandle("johnsFirstGroupHandle"));
 
             Group group2 = new Group();
@@ -270,7 +270,7 @@ public class SearchTest extends TestCase {
             group2.setDescription("commonDescription");
             profile1 = profileManager.getProfile(profile1.getId());
             groupManager.createGroup(group2, profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(groupManager.getGroupByHandle("johnsSecondGroupHandle"));
 
             int totalResults1 = searchManager.getTotalGroups("johnsFirstGroupName");
@@ -302,13 +302,13 @@ public class SearchTest extends TestCase {
             assertFalse(results4.contains(group2));
 
             groupManager.removeGroup(groupManager.getGroupByHandle("johnsFirstGroupHandle"));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             groupManager.removeGroup(groupManager.getGroupByHandle("johnsSecondGroupHandle"));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             profileManager.removeProfile((profileManager.getProfileByUserId("john")));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             assertNull(profileManager.getProfileByUserId("john"));
             assertNull(groupManager.getGroupByHandle("johnsFirstGroupHandle"));
@@ -341,7 +341,7 @@ public class SearchTest extends TestCase {
         try {
             if (Factory.getSocialSite().getProfileManager().getProfileByUserId(
                 userId) != null) {
-                TestUtils.teardownPerson(userId);
+                Utils.teardownPerson(userId);
             }
         } catch (Exception e) {
             log.debug("Exception ignored while cleaning up person: " +
@@ -354,7 +354,7 @@ public class SearchTest extends TestCase {
         try {
             if (Factory.getSocialSite().getGroupManager().getGroupByHandle(
                 handle) != null) {
-                TestUtils.teardownGroup(handle);
+                Utils.teardownGroup(handle);
             }
         } catch (Exception e) {
             log.debug("Exception ignored while cleaning up group: " +

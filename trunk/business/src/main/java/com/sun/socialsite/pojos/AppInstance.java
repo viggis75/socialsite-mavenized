@@ -41,6 +41,7 @@ import com.sun.socialsite.business.impl.JPAListenerManagerImpl;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.UUID;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -93,14 +94,16 @@ public class AppInstance implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.TABLE, generator="appinstance")
-    @TableGenerator(name="appinstance", table="ss_ids", pkColumnName="name", valueColumnName="value", pkColumnValue="appinstance")
+    @TableGenerator(name="appinstance", table="ss_ids", pkColumnName="nameCol", valueColumnName="valueCol", pkColumnValue="appinstance")
     @Column(nullable=false,updatable=false)
     private Long id;
 
     private Timestamp created = new Timestamp(System.currentTimeMillis());
 
     @Version
-    private Timestamp updated = new Timestamp(created.getTime());
+    private Timestamp version;
+    
+    private Timestamp updated = new Timestamp(new Date().getTime());
 
     @ManyToOne
     @JoinColumn(name="appid")

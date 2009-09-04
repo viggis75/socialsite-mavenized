@@ -115,7 +115,9 @@ public class GroupRelationship implements Serializable {
     private Timestamp created = new Timestamp(System.currentTimeMillis());
 
     @Version
-    private Timestamp updated = new Timestamp(created.getTime());
+    private Timestamp version;
+    
+    private Timestamp updated = new Timestamp(new Date().getTime());
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="groupid")

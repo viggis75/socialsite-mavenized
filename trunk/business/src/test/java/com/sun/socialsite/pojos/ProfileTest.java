@@ -35,7 +35,7 @@
 
 package com.sun.socialsite.pojos;
 
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.business.*;
 import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
@@ -53,7 +53,7 @@ public class ProfileTest extends TestCase {
 
     @Before
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
     }
 
 
@@ -79,7 +79,7 @@ public class ProfileTest extends TestCase {
             profile1.setLastName("Smith");
             profile1.setPrimaryEmail("steves@example.com");
             mgr.saveProfile(profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(mgr.getProfileByUserId("steves"));
 
             // test setting/getting a defined PROPERTY, should work ;-)
@@ -90,12 +90,12 @@ public class ProfileTest extends TestCase {
                 profile.update(Profile.Format.FLAT, updates);
                 mgr.saveProfile(profile);
                 Factory.getSocialSite().flush();
-                TestUtils.endSession(true);
+                Utils.endSession(true);
 
                 profile = mgr.getProfileByUserId("steves");
                 assertEquals("steves",
                         profile.getProperty("identification_nickname").getValue());
-                TestUtils.endSession(true);
+                Utils.endSession(true);
             }
 
             // test setting/getting an UNDEFINED PROPERTY, should fail
@@ -106,11 +106,11 @@ public class ProfileTest extends TestCase {
                 profile.update(Profile.Format.FLAT, updates);
                 mgr.saveProfile(profile);
                 Factory.getSocialSite().flush();
-                TestUtils.endSession(true);
+                Utils.endSession(true);
 
                 profile = mgr.getProfileByUserId("steves");
                 assertNull(profile.getProperty("monstertruckname"));
-                TestUtils.endSession(true);
+                Utils.endSession(true);
             }
 
             // test setting/getting PROPERTY OBJECT properties
@@ -122,12 +122,12 @@ public class ProfileTest extends TestCase {
                 profile.update(Profile.Format.FLAT, updates);
                 mgr.saveProfile(profile);
                 Factory.getSocialSite().flush();
-                TestUtils.endSession(true);
+                Utils.endSession(true);
 
                 profile = mgr.getProfileByUserId("steves");
                 assertEquals("http://bodiddly.com/songs/roadrunner.mp3",
                         profile.getProperty("personal_profileSong_address").getValue());
-                TestUtils.endSession(true);
+                Utils.endSession(true);
             }
 
             // test creating a PROPERTY OBJECT COLLECTION
@@ -150,11 +150,11 @@ public class ProfileTest extends TestCase {
                 profile.update(Profile.Format.FLAT, updates);
                 mgr.saveProfile(profile);
                 Factory.getSocialSite().flush();
-                TestUtils.endSession(true);
+                Utils.endSession(true);
 
                 profile = mgr.getProfileByUserId("steves");
                 assertEquals("Moon Microsystems, Inc.", profile.getProperty("experience_jobs_3_name").getValue());
-                TestUtils.endSession(true);
+                Utils.endSession(true);
             }
 
             // test deleting from middle of a PROPERTY OBJECT COLLECTION
@@ -168,13 +168,13 @@ public class ProfileTest extends TestCase {
                 profile.update(Profile.Format.FLAT, updates);
                 mgr.saveProfile(profile);
                 Factory.getSocialSite().flush();
-                TestUtils.endSession(true);
+                Utils.endSession(true);
 
                 // and the 3rd object becomes the 2nd object
                 profile = mgr.getProfileByUserId("steves");
                 assertEquals("Moon Microsystems, Inc.", profile.getProperty("experience_jobs_2_name").getValue());
                 assertEquals("http://example-moon.com", profile.getProperty("experience_jobs_2_webpage_address").getValue());
-                TestUtils.endSession(true);
+                Utils.endSession(true);
             }
 
             // test deleting from END of a PROPERTY OBJECT COLLECTION
@@ -188,7 +188,7 @@ public class ProfileTest extends TestCase {
                 profile.update(Profile.Format.FLAT, updates);
                 mgr.saveProfile(profile);
                 Factory.getSocialSite().flush();
-                TestUtils.endSession(true);
+                Utils.endSession(true);
 
                 // and the 4th object is gone, including nested props
                 profile = mgr.getProfileByUserId("steves");
@@ -198,7 +198,7 @@ public class ProfileTest extends TestCase {
 
             // remove the profile
             mgr.removeProfile(mgr.getProfileByUserId("steves"));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
         } catch (Exception e) {
             log.error("ERROR", e);
@@ -228,7 +228,7 @@ public class ProfileTest extends TestCase {
             profile1.setLastName("Smith");
             profile1.setPrimaryEmail("steves@example.com");
             mgr.saveProfile(profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(mgr.getProfileByUserId("steves2"));
 
             // add some properties
@@ -254,7 +254,7 @@ public class ProfileTest extends TestCase {
                 profile.update(Profile.Format.FLAT, updates);
                 mgr.saveProfile(profile);
                 Factory.getSocialSite().flush();
-                TestUtils.endSession(true);
+                Utils.endSession(true);
             }
 
             // convert to JSON
@@ -266,7 +266,7 @@ public class ProfileTest extends TestCase {
 
             // remove the profile
             mgr.removeProfile(mgr.getProfileByUserId("steves2"));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
         } catch (Exception e) {
             log.error("ERROR", e);

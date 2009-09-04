@@ -37,7 +37,7 @@ package com.sun.socialsite.web.rest.opensocial;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.business.Factory;
 import com.sun.socialsite.business.ProfileManager;
 import com.sun.socialsite.pojos.Profile;
@@ -65,7 +65,7 @@ public class ProfileCreatorTest extends TestCase {
     public void setUp() throws Exception {
         Injector injector = Guice.createInjector(new SocialSiteGuiceModule());
         profileCreator = injector.getInstance(ProfileCreator.class);
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
     }
 
 
@@ -112,7 +112,7 @@ public class ProfileCreatorTest extends TestCase {
         try {
             ConsumerContext consumerContext = new ConsumerContext(null, json);
             profileCreator.handleContext(consumerContext);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             /*
              * Verify that a profile for the context owner (Bugs) was created.
@@ -123,7 +123,7 @@ public class ProfileCreatorTest extends TestCase {
             Assert.assertEquals("Bugs", bugs.getFirstName());
             Assert.assertEquals("Bunny", bugs.getLastName());
             Assert.assertEquals("bugs.bunny@cartoons.com", bugs.getPrimaryEmail());
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             /*
              * Verify that a profile for the context viewer (Daffy) was created.
@@ -134,7 +134,7 @@ public class ProfileCreatorTest extends TestCase {
             Assert.assertEquals("Daffy", daffy.getFirstName());
             Assert.assertEquals("Duck", daffy.getLastName());
             Assert.assertEquals("daffy.duck@cartoons.com", daffy.getPrimaryEmail());
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
         } finally {
             profileManager.removeProfile(profileManager.getProfileByUserId("bugs_bunny"));

@@ -35,7 +35,7 @@
 
 package com.sun.socialsite.business;
 
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.pojos.AppRegistration;
 import com.sun.socialsite.pojos.Profile;
 import com.sun.socialsite.userapi.User;
@@ -55,7 +55,7 @@ public class AppRegistrationTest extends TestCase {
     public static Log log = LogFactory.getLog(AppRegistrationTest.class);
 
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
     }
 
     public static Test suite() {
@@ -74,10 +74,10 @@ public class AppRegistrationTest extends TestCase {
         // first, we need a developer
         ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
         assertNotNull(pmgr);
-        User devDude = TestUtils.setupUser("devdude");
-        Profile hisProfile = TestUtils.setupProfile(devDude, "Dev", "Dude");
+        User devDude = Utils.setupUser("devdude");
+        Profile hisProfile = Utils.setupProfile(devDude, "Dev", "Dude");
         pmgr.saveProfile(hisProfile);
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         // and we need an app
         String appurl = "file:./web/local_gadgets/face.xml";
@@ -98,7 +98,7 @@ public class AppRegistrationTest extends TestCase {
 
             // developer registers app
             amgr.registerApp(hisProfile.getId(), appurl, null);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // admin gets list of pending apps
             pending = amgr.getAppRegistrations(hisProfile.getId(), "PENDING");
@@ -113,7 +113,7 @@ public class AppRegistrationTest extends TestCase {
             // admin approves app
             AppRegistration reg = pending.get(0);
             amgr.approveAppRegistration(reg.getId(), "approved, yay!");
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // assert that app is approved
             pending = amgr.getAppRegistrations(hisProfile.getId(), "PENDING");
@@ -127,7 +127,7 @@ public class AppRegistrationTest extends TestCase {
 
             // remove app and asset that app is gone daddy gone
             amgr.rejectAppRegistration(reg.getId(), "rejected, sorry!");
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             pending = amgr.getAppRegistrations(hisProfile.getId(), "PENDING");
             assertEquals(0, pending.size());
@@ -143,8 +143,8 @@ public class AppRegistrationTest extends TestCase {
             throw e;
             
         } finally {
-            TestUtils.teardownUser(devDude.getUserId());
-            TestUtils.endSession(true);
+            Utils.teardownUser(devDude.getUserId());
+            Utils.endSession(true);
         }
 
         log.info("END");
@@ -162,7 +162,7 @@ public class AppRegistrationTest extends TestCase {
 
             AppManager amgr = Factory.getSocialSite().getAppManager();
             amgr.saveOAuthEntry(entry);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Retrieve
             OAuthEntry fetched = amgr.getOAuthEntry(entry.token);
@@ -171,14 +171,14 @@ public class AppRegistrationTest extends TestCase {
             // Updated
             fetched.appId = "8675309";
             amgr.saveOAuthEntry(fetched);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             OAuthEntry refetched = amgr.getOAuthEntry(entry.token);
             assertEquals(fetched.appId, refetched.appId);
 
             // Delete
             amgr.removeOAuthEntry(entry);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             assertNull(amgr.getOAuthEntry(entry.token));
 
@@ -187,7 +187,7 @@ public class AppRegistrationTest extends TestCase {
             throw e;
 
         } finally {
-            TestUtils.endSession(false);
+            Utils.endSession(false);
         }
 
         log.info("END");

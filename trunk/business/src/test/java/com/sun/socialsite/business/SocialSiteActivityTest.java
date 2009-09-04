@@ -36,7 +36,7 @@
 package com.sun.socialsite.business;
 
 import com.sun.socialsite.userapi.User;
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.pojos.SocialSiteActivity;
 import com.sun.socialsite.pojos.Profile;
 import junit.framework.Test;
@@ -55,7 +55,7 @@ public class SocialSiteActivityTest extends TestCase {
 
 
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
 
     }
 
@@ -78,20 +78,20 @@ public class SocialSiteActivityTest extends TestCase {
             SocialSiteActivityManager mgr = Factory.getSocialSite().getSocialSiteActivityManager();
             assertNotNull(mgr);
 
-            User testUser = TestUtils.setupUser("activityTestUser");
-            TestUtils.endSession(true);
+            User testUser = Utils.setupUser("activityTestUser");
+            Utils.endSession(true);
 
             ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
-            Profile profile = TestUtils.setupProfile(testUser, "Test", "User");
+            Profile profile = Utils.setupProfile(testUser, "Test", "User");
             pmgr.saveProfile(profile);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             SocialSiteActivity activity = new SocialSiteActivity();
             activity.setTitle("I'm testing right now");
             activity.setType(SocialSiteActivity.STATUS);
             activity.setProfile(profile);
             mgr.saveActivity(activity);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             assertNotNull(mgr.getActivity(activity.getId()));
 
@@ -101,13 +101,13 @@ public class SocialSiteActivityTest extends TestCase {
             assertNotNull(fetched.getProfile());
 
             mgr.removeActivity(mgr.getActivity(activity.getId()));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             pmgr.removeProfile(pmgr.getProfile(profile.getId()));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
-            TestUtils.teardownUser(testUser.getUserId());
-            TestUtils.endSession(true);
+            Utils.teardownUser(testUser.getUserId());
+            Utils.endSession(true);
 
         } catch (Exception e) {
             log.error("Unexpected Exception", e);

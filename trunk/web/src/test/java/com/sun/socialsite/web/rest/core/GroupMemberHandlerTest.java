@@ -39,7 +39,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.business.Factory;
 import com.sun.socialsite.business.GroupManager;
 import com.sun.socialsite.business.ProfileManager;
@@ -84,7 +84,7 @@ public class GroupMemberHandlerTest extends TestCase {
         Injector injector = Guice.createInjector(new SocialSiteGuiceModule());
         converter = injector.getInstance(BeanJsonConverter.class);
 
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
         List<App> apps = Factory.getSocialSite().getAppManager().getApps(0, 1);
         token = new FakeSocialSiteGadgetToken();
         token.setAppId(apps.get(0).getId());
@@ -102,15 +102,15 @@ public class GroupMemberHandlerTest extends TestCase {
         ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
         GroupManager gmgr = Factory.getSocialSite().getGroupManager();
 
-        Profile jack = TestUtils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
-        Profile sue = TestUtils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
-        Group group = TestUtils.setupGroup("testgroup");
-        TestUtils.endSession(true);
+        Profile jack = Utils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
+        Profile sue = Utils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
+        Group group = Utils.setupGroup("testgroup");
+        Utils.endSession(true);
 
         try {
             gmgr.createMembership(group, jack, GroupRelationship.Relationship.ADMIN);
             gmgr.createMembership(group, sue, GroupRelationship.Relationship.MEMBER);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             token.setViewerId(jack.getUserId());
             
@@ -131,9 +131,9 @@ public class GroupMemberHandlerTest extends TestCase {
             }
 
         } finally {
-            TestUtils.teardownGroup(group.getHandle());
-            TestUtils.teardownPerson(jack.getUserId());
-            TestUtils.teardownPerson(sue.getUserId());
+            Utils.teardownGroup(group.getHandle());
+            Utils.teardownPerson(jack.getUserId());
+            Utils.teardownPerson(sue.getUserId());
         }
 
         log.info("END");
@@ -148,17 +148,17 @@ public class GroupMemberHandlerTest extends TestCase {
         ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
         GroupManager gmgr = Factory.getSocialSite().getGroupManager();
 
-        Profile jack = TestUtils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
-        Profile sue = TestUtils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
-        Group group = TestUtils.setupGroup("testgroup");
-        TestUtils.endSession(true);
+        Profile jack = Utils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
+        Profile sue = Utils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
+        Group group = Utils.setupGroup("testgroup");
+        Utils.endSession(true);
 
         try {
             jack = pmgr.getProfile(jack.getId());
             sue = pmgr.getProfile(sue.getId());
             gmgr.createMembership(group, jack, GroupRelationship.Relationship.ADMIN);
             gmgr.createMembership(group, sue, GroupRelationship.Relationship.MEMBER);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             token.setViewerId(jack.getUserId());
 
@@ -178,9 +178,9 @@ public class GroupMemberHandlerTest extends TestCase {
             }
 
         } finally {
-            TestUtils.teardownGroup(group.getHandle());
-            TestUtils.teardownPerson(jack.getUserId());
-            TestUtils.teardownPerson(sue.getUserId());
+            Utils.teardownGroup(group.getHandle());
+            Utils.teardownPerson(jack.getUserId());
+            Utils.teardownPerson(sue.getUserId());
         }
 
         log.info("END");
@@ -195,17 +195,17 @@ public class GroupMemberHandlerTest extends TestCase {
         ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
         GroupManager gmgr = Factory.getSocialSite().getGroupManager();
 
-        Profile jack = TestUtils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
-        Profile sue = TestUtils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
-        Group group = TestUtils.setupGroup("testgroup");
-        TestUtils.endSession(true);
+        Profile jack = Utils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
+        Profile sue = Utils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
+        Group group = Utils.setupGroup("testgroup");
+        Utils.endSession(true);
 
         try {
             // Jack is group admin for 'testgroup'
             jack = pmgr.getProfile(jack.getId());
             group = gmgr.getGroupById(group.getId());
             gmgr.createMembership(group, jack, GroupRelationship.Relationship.ADMIN);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Sue posts herself to 'testgroup' to request membership
             token.setViewerId(sue.getUserId());
@@ -227,9 +227,9 @@ public class GroupMemberHandlerTest extends TestCase {
             assertEquals(1, reqs.size());
 
         } finally {
-            TestUtils.teardownGroup(group.getHandle());
-            TestUtils.teardownPerson(jack.getUserId());
-            TestUtils.teardownPerson(sue.getUserId());
+            Utils.teardownGroup(group.getHandle());
+            Utils.teardownPerson(jack.getUserId());
+            Utils.teardownPerson(sue.getUserId());
         }
 
         log.info("END");
@@ -244,17 +244,17 @@ public class GroupMemberHandlerTest extends TestCase {
         ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
         GroupManager gmgr = Factory.getSocialSite().getGroupManager();
 
-        Profile jack = TestUtils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
-        Profile sue = TestUtils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
-        Group group = TestUtils.setupGroup("testgroup");
-        TestUtils.endSession(true);
+        Profile jack = Utils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
+        Profile sue = Utils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
+        Group group = Utils.setupGroup("testgroup");
+        Utils.endSession(true);
 
         try {
             // Jack is group admin for 'testgroup'
             jack = pmgr.getProfile(jack.getId());
             group = gmgr.getGroupById(group.getId());
             gmgr.createMembership(group, jack, GroupRelationship.Relationship.ADMIN);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Sue posts herself to 'testgroup' to request membership
             token.setViewerId(sue.getUserId());
@@ -289,9 +289,9 @@ public class GroupMemberHandlerTest extends TestCase {
             }
 
         } finally {
-            TestUtils.teardownGroup(group.getHandle());
-            TestUtils.teardownPerson(jack.getUserId());
-            TestUtils.teardownPerson(sue.getUserId());
+            Utils.teardownGroup(group.getHandle());
+            Utils.teardownPerson(jack.getUserId());
+            Utils.teardownPerson(sue.getUserId());
         }
 
         log.info("END");
@@ -306,17 +306,17 @@ public class GroupMemberHandlerTest extends TestCase {
         ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
         GroupManager gmgr = Factory.getSocialSite().getGroupManager();
 
-        Profile jack = TestUtils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
-        Profile sue = TestUtils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
-        Group group = TestUtils.setupGroup("testgroup");
-        TestUtils.endSession(true);
+        Profile jack = Utils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
+        Profile sue = Utils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
+        Group group = Utils.setupGroup("testgroup");
+        Utils.endSession(true);
 
         try {
             // Jack is group admin for 'testgroup'
             jack = pmgr.getProfile(jack.getId());
             group = gmgr.getGroupById(group.getId());
             gmgr.createMembership(group, jack, GroupRelationship.Relationship.ADMIN);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Sue posts herself to 'testgroup' to request membership
             token.setViewerId(sue.getUserId());
@@ -357,9 +357,9 @@ public class GroupMemberHandlerTest extends TestCase {
             assertNull(gmgr.getMembershipRequest(group, sue));
 
         } finally {
-            TestUtils.teardownGroup(group.getHandle());
-            TestUtils.teardownPerson(jack.getUserId());
-            TestUtils.teardownPerson(sue.getUserId());
+            Utils.teardownGroup(group.getHandle());
+            Utils.teardownPerson(jack.getUserId());
+            Utils.teardownPerson(sue.getUserId());
         }
 
         log.info("END");
@@ -375,17 +375,17 @@ public class GroupMemberHandlerTest extends TestCase {
         ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
         GroupManager gmgr = Factory.getSocialSite().getGroupManager();
 
-        Profile jack = TestUtils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
-        Profile sue = TestUtils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
-        Group group = TestUtils.setupGroup("testgroup");
-        TestUtils.endSession(true);
+        Profile jack = Utils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
+        Profile sue = Utils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
+        Group group = Utils.setupGroup("testgroup");
+        Utils.endSession(true);
 
         try {
             // Jack is group admin for 'testgroup'
             jack = pmgr.getProfile(jack.getId());
             group = gmgr.getGroupById(group.getId());
             gmgr.createMembership(group, jack, GroupRelationship.Relationship.ADMIN);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Sue posts herself to 'testgroup' to request membership
             token.setViewerId(sue.getUserId());
@@ -422,9 +422,9 @@ public class GroupMemberHandlerTest extends TestCase {
             assertNull(gmgr.getMembershipRequest(group, sue));
 
         } finally {
-            TestUtils.teardownGroup(group.getHandle());
-            TestUtils.teardownPerson(jack.getUserId());
-            TestUtils.teardownPerson(sue.getUserId());
+            Utils.teardownGroup(group.getHandle());
+            Utils.teardownPerson(jack.getUserId());
+            Utils.teardownPerson(sue.getUserId());
         }
 
         log.info("END");
@@ -439,10 +439,10 @@ public class GroupMemberHandlerTest extends TestCase {
         ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
         GroupManager gmgr = Factory.getSocialSite().getGroupManager();
 
-        Profile jack = TestUtils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
-        Profile sue = TestUtils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
-        Group group = TestUtils.setupGroup("testgroup");
-        TestUtils.endSession(true);
+        Profile jack = Utils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
+        Profile sue = Utils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
+        Group group = Utils.setupGroup("testgroup");
+        Utils.endSession(true);
 
         try {
             // Jack is group admin
@@ -451,7 +451,7 @@ public class GroupMemberHandlerTest extends TestCase {
             group = gmgr.getGroupById(group.getId());
             gmgr.createMembership(group, jack, GroupRelationship.Relationship.ADMIN);
             gmgr.createMembership(group, sue, GroupRelationship.Relationship.MEMBER);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Jack posts Sue to group's admin collection to make here an admin
             token.setViewerId(jack.getUserId());
@@ -474,9 +474,9 @@ public class GroupMemberHandlerTest extends TestCase {
                     gmgr.getMembership(group, sue).getRelcode());
 
         } finally {
-            TestUtils.teardownGroup(group.getHandle());
-            TestUtils.teardownPerson(jack.getUserId());
-            TestUtils.teardownPerson(sue.getUserId());
+            Utils.teardownGroup(group.getHandle());
+            Utils.teardownPerson(jack.getUserId());
+            Utils.teardownPerson(sue.getUserId());
         }
 
         log.info("END");
@@ -491,10 +491,10 @@ public class GroupMemberHandlerTest extends TestCase {
         ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
         GroupManager gmgr = Factory.getSocialSite().getGroupManager();
 
-        Profile jack = TestUtils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
-        Profile sue = TestUtils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
-        Group group = TestUtils.setupGroup("testgroup");
-        TestUtils.endSession(true);
+        Profile jack = Utils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
+        Profile sue = Utils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
+        Group group = Utils.setupGroup("testgroup");
+        Utils.endSession(true);
 
         try {
             // Jack is group admin
@@ -503,7 +503,7 @@ public class GroupMemberHandlerTest extends TestCase {
             group = gmgr.getGroupById(group.getId());
             gmgr.createMembership(group, jack, GroupRelationship.Relationship.MEMBER);
             gmgr.createMembership(group, sue, GroupRelationship.Relationship.MEMBER);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Sue tries to promote herself to admin
             token.setViewerId(sue.getUserId());
@@ -526,9 +526,9 @@ public class GroupMemberHandlerTest extends TestCase {
                     gmgr.getMembership(group, sue).getRelcode());
 
         } finally {
-            TestUtils.teardownGroup(group.getHandle());
-            TestUtils.teardownPerson(jack.getUserId());
-            TestUtils.teardownPerson(sue.getUserId());
+            Utils.teardownGroup(group.getHandle());
+            Utils.teardownPerson(jack.getUserId());
+            Utils.teardownPerson(sue.getUserId());
         }
 
         log.info("END");
@@ -543,15 +543,15 @@ public class GroupMemberHandlerTest extends TestCase {
         ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
         GroupManager gmgr = Factory.getSocialSite().getGroupManager();
 
-        Profile jack = TestUtils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
-        Profile sue = TestUtils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
-        Group group = TestUtils.setupGroup("testgroup");
-        TestUtils.endSession(true);
+        Profile jack = Utils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
+        Profile sue = Utils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
+        Group group = Utils.setupGroup("testgroup");
+        Utils.endSession(true);
 
         try {
             gmgr.createMembership(group, jack, GroupRelationship.Relationship.ADMIN);
             gmgr.createMembership(group, sue, GroupRelationship.Relationship.MEMBER);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Sue leaves group
             token.setViewerId(sue.getUserId());
@@ -575,9 +575,9 @@ public class GroupMemberHandlerTest extends TestCase {
             assertNull(gmgr.getMembership(group, sue));
 
         } finally {
-            TestUtils.teardownGroup(group.getHandle());
-            TestUtils.teardownPerson(jack.getUserId());
-            TestUtils.teardownPerson(sue.getUserId());
+            Utils.teardownGroup(group.getHandle());
+            Utils.teardownPerson(jack.getUserId());
+            Utils.teardownPerson(sue.getUserId());
         }
 
         log.info("END");
@@ -592,15 +592,15 @@ public class GroupMemberHandlerTest extends TestCase {
         ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
         GroupManager gmgr = Factory.getSocialSite().getGroupManager();
 
-        Profile jack = TestUtils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
-        Profile sue = TestUtils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
-        Group group = TestUtils.setupGroup("testgroup");
-        TestUtils.endSession(true);
+        Profile jack = Utils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
+        Profile sue = Utils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
+        Group group = Utils.setupGroup("testgroup");
+        Utils.endSession(true);
 
         try {
             gmgr.createMembership(group, jack, GroupRelationship.Relationship.ADMIN);
             gmgr.createMembership(group, sue, GroupRelationship.Relationship.MEMBER);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Sue leaves group
             token.setViewerId(jack.getUserId());
@@ -623,9 +623,9 @@ public class GroupMemberHandlerTest extends TestCase {
             assertNull(gmgr.getMembership(group, sue));
 
         } finally {
-            TestUtils.teardownGroup(group.getHandle());
-            TestUtils.teardownPerson(jack.getUserId());
-            TestUtils.teardownPerson(sue.getUserId());
+            Utils.teardownGroup(group.getHandle());
+            Utils.teardownPerson(jack.getUserId());
+            Utils.teardownPerson(sue.getUserId());
         }
 
         log.info("END");
@@ -640,16 +640,16 @@ public class GroupMemberHandlerTest extends TestCase {
         ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
         GroupManager gmgr = Factory.getSocialSite().getGroupManager();
 
-        Profile jack = TestUtils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
-        Profile sue = TestUtils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
-        Group group = TestUtils.setupGroup("testgroup");
-        TestUtils.endSession(true);
+        Profile jack = Utils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
+        Profile sue = Utils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
+        Group group = Utils.setupGroup("testgroup");
+        Utils.endSession(true);
 
         try {
             // Jack and Sue are just plain old members
             gmgr.createMembership(group, jack, GroupRelationship.Relationship.MEMBER);
             gmgr.createMembership(group, sue, GroupRelationship.Relationship.MEMBER);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Jack tries to remove Sue from group
             token.setViewerId(jack.getUserId());
@@ -671,9 +671,9 @@ public class GroupMemberHandlerTest extends TestCase {
             assertNotNull(gmgr.getMembership(group, sue));
 
         } finally {
-            TestUtils.teardownGroup(group.getHandle());
-            TestUtils.teardownPerson(jack.getUserId());
-            TestUtils.teardownPerson(sue.getUserId());
+            Utils.teardownGroup(group.getHandle());
+            Utils.teardownPerson(jack.getUserId());
+            Utils.teardownPerson(sue.getUserId());
         }
 
         log.info("END");

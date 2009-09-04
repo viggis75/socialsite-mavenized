@@ -49,6 +49,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 
 /**
@@ -84,6 +85,9 @@ public abstract class SocialRequest implements Serializable {
     @JoinColumn(name = "groupid")
     protected Group group = null;
 
+    @Version
+    private Timestamp version ;
+    
     private Timestamp created = new Timestamp(System.currentTimeMillis());
 
     public enum Status {

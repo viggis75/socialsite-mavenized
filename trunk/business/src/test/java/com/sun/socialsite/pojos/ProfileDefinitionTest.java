@@ -35,7 +35,7 @@
 
 package com.sun.socialsite.pojos;
 
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.business.Factory;
 import com.sun.socialsite.util.TextUtil;
 import junit.framework.TestCase;
@@ -61,7 +61,7 @@ public class ProfileDefinitionTest extends TestCase {
 
     public void setUp() throws Exception {
         // setup socialsite
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
     }
 
     public void tearDown() {

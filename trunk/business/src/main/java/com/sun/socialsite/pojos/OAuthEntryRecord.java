@@ -64,7 +64,7 @@ public class OAuthEntryRecord implements Serializable {
     private OAuthEntry.Type type;
     private boolean authorized;
 
-    private Timestamp updated;
+    private Timestamp updated = new Timestamp(new Date().getTime());
     private Timestamp issueTime;
 
     public OAuthEntryRecord() {}

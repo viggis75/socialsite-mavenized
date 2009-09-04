@@ -35,7 +35,7 @@
 
 package com.sun.socialsite.business;
 
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.business.impl.JPAOAuthStore;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -55,7 +55,7 @@ public class OAuthStoreTest extends TestCase {
     public static Log log = LogFactory.getLog(OAuthStoreTest.class);
 
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
     }
 
     public static Test suite() {
@@ -98,7 +98,7 @@ public class OAuthStoreTest extends TestCase {
             throw e;
 
         } finally {
-            TestUtils.endSession(false);
+            Utils.endSession(false);
         }
 
         log.info("END");

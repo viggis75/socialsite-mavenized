@@ -35,7 +35,7 @@
 
 package com.sun.socialsite.business;
 
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.pojos.Profile;
 import com.sun.socialsite.pojos.ProfileProperty;
 import java.util.Date;
@@ -56,7 +56,7 @@ public class ProfileManagerTest extends TestCase {
 
 
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
     }
 
 
@@ -78,29 +78,29 @@ public class ProfileManagerTest extends TestCase {
             ProfileManager mgr = Factory.getSocialSite().getProfileManager();
 
             Profile profile1 = new Profile();
-            profile1.setUserId("snoopdave");
+            profile1.setUserId("snoopdave1");
             profile1.setFirstName("David");
             profile1.setMiddleName("Mason");
             profile1.setLastName("Johnson");
             profile1.setPrimaryEmail("davidm.johnson@sun.com");
             mgr.saveProfile(profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(mgr.getProfileByUserId("snoopdave"));
 
             // Now make an update to snoopdave's profile
-            Profile profile1a = mgr.getProfileByUserId("snoopdave");
+            Profile profile1a = mgr.getProfileByUserId("snoopdave1");
             assertNotNull(profile1a);
             Date d1 = profile1a.getUpdated();
             profile1a.setSurtitle("Jr");
             mgr.saveProfile(profile1a);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Then read back the result, and make sure the "updated" timestamp has progressed
-            Profile profile1b = mgr.getProfileByUserId("snoopdave");
+            Profile profile1b = mgr.getProfileByUserId("snoopdave1");
             assertNotNull(profile1b);
             Date d2 = profile1b.getUpdated();
             assertTrue("d2 should be greater than d1", (d2.getTime() > d1.getTime()));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             Profile profile2 = new Profile();
             profile2.setUserId("otherguy");
@@ -108,7 +108,7 @@ public class ProfileManagerTest extends TestCase {
             profile2.setLastName("Guy");
             profile2.setPrimaryEmail("other.guy@someplace.com");
             mgr.saveProfile(profile2);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(mgr.getProfileByUserId("otherguy"));
 
             List<Profile> results1 = mgr.getOldestProfiles(0, -1);
@@ -121,13 +121,13 @@ public class ProfileManagerTest extends TestCase {
             assertEquals(profile2, results2.get(0));
             assertEquals(profile1, results2.get(1));
 
-            mgr.removeProfile(mgr.getProfileByUserId("snoopdave"));
-            TestUtils.endSession(true);
+            mgr.removeProfile(mgr.getProfileByUserId("snoopdave1"));
+            Utils.endSession(true);
 
             mgr.removeProfile(mgr.getProfileByUserId("otherguy"));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
-            assertNull(mgr.getProfileByUserId("snoopdave"));
+            assertNull(mgr.getProfileByUserId("snoopdave1"));
             assertNull(mgr.getProfileByUserId("otherguy"));
 
         } catch (Exception e) {
@@ -156,7 +156,7 @@ public class ProfileManagerTest extends TestCase {
             profile1.setLastName("Johnson");
             profile1.setPrimaryEmail("davidm.johnson@sun.com");
             mgr.saveProfile(profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // assert that profile now exists
             assertNotNull(mgr.getProfileByUserId("snoopdave"));
@@ -169,7 +169,7 @@ public class ProfileManagerTest extends TestCase {
             prop1.setValue("value1");
             prop1.setVisibility(Profile.VisibilityType.PRIVATE);
             profile2.addProfileProp(prop1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // assert that property now exists
             Profile profile3 = mgr.getProfileByUserId("snoopdave");
@@ -180,7 +180,7 @@ public class ProfileManagerTest extends TestCase {
             ProfileProperty prop2 = profile3.getProperty("setting1");
             profile3.removeProperty(prop2);
             mgr.removeProfileProperty(prop2);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // assert that property is gone
             Profile profile4 = mgr.getProfileByUserId("snoopdave");
@@ -188,7 +188,7 @@ public class ProfileManagerTest extends TestCase {
 
             // remove profile
             mgr.removeProfile(mgr.getProfileByUserId("snoopdave"));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // assert that profile is gone
             assertNull(mgr.getProfileByUserId("snoopdave"));

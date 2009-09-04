@@ -37,7 +37,7 @@ package com.sun.socialsite.pojos;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.business.*;
 import com.sun.socialsite.web.rest.config.SocialSiteGuiceModule;
 import com.sun.socialsite.web.rest.model.PersonEx;
@@ -61,7 +61,7 @@ public class ProfileToFromPersonTest extends TestCase {
     public void setUp() throws Exception {
         Injector injector = Guice.createInjector(new SocialSiteGuiceModule());
         converter = injector.getInstance(BeanJsonConverter.class);
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
     }
 
     /**
@@ -81,7 +81,7 @@ public class ProfileToFromPersonTest extends TestCase {
             profile1.setLastName("Smith");
             profile1.setPrimaryEmail("steves@example.com");
             mgr.saveProfile(profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(mgr.getProfileByUserId("steves"));
 
             // set some properties
@@ -102,7 +102,7 @@ public class ProfileToFromPersonTest extends TestCase {
 
             mgr.saveProfile(profile1);
             Factory.getSocialSite().flush();
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // convert it to JSON format
             profile1 = mgr.getProfileByUserId("steves");
@@ -117,7 +117,7 @@ public class ProfileToFromPersonTest extends TestCase {
         } finally {
             if (mgr.getProfileByUserId("steves") != null) {
                 mgr.removeProfile(mgr.getProfileByUserId("steves"));
-                TestUtils.endSession(true);
+                Utils.endSession(true);
             }
         }
         log.info("END");

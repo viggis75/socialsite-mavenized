@@ -35,7 +35,7 @@
 
 package com.sun.socialsite.business;
 
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.pojos.ContextRule;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ public class ContextRuleTest extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
         manager = Factory.getSocialSite().getContextRuleManager();
     }
 
@@ -82,7 +82,7 @@ public class ContextRuleTest extends TestCase {
             rule.setAccept(accept);
 
             manager.saveRule(rule);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             List<ContextRule> rules = manager.getRules();
             assertEquals(1, rules.size());
@@ -131,7 +131,7 @@ public class ContextRuleTest extends TestCase {
 
             manager.saveRule(rule1);
             manager.saveRule(rule2);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             List<ContextRule> rules = manager.getRules();
             assertEquals(2, rules.size());
@@ -179,7 +179,7 @@ public class ContextRuleTest extends TestCase {
             rule1.setAccept(accept);
 
             manager.saveRule(rule1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             List<ContextRule> rules = manager.getRules();
             assertEquals(1, rules.size());
@@ -191,7 +191,7 @@ public class ContextRuleTest extends TestCase {
             assertEquals(rule1, rule2);
 
             manager.removeRule(rule2);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             rules = manager.getRules();
             assertEquals(0, rules.size());
@@ -220,7 +220,7 @@ public class ContextRuleTest extends TestCase {
             rule1.setAccept(accept);
 
             manager.saveRule(rule1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             List<ContextRule> rules = manager.getRules();
             assertEquals(1, rules.size());
@@ -254,7 +254,7 @@ public class ContextRuleTest extends TestCase {
         for (ContextRule rule : rules) {
             manager.removeRule(rule);
         }
-        TestUtils.endSession(true);
+        Utils.endSession(true);
     }
     
 }

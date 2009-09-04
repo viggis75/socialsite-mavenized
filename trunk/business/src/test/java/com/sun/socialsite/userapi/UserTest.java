@@ -35,7 +35,7 @@
 
 package com.sun.socialsite.userapi;
 
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.business.Factory;
 import com.sun.socialsite.config.Config;
 import java.util.List;
@@ -65,7 +65,7 @@ public class UserTest extends TestCase {
 
 
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
     }
 
     public void tearDown() throws Exception {
@@ -98,7 +98,7 @@ public class UserTest extends TestCase {
         // add test user
         mgr.addUser(testUser);
         String userId = testUser.getUserId();
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         // make sure test user exists
         user = null;
@@ -110,7 +110,7 @@ public class UserTest extends TestCase {
         user.setUserName("testtesttest");
         user.setFullName("testtesttest");
         mgr.saveUser(user);
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         // make sure changes were saved
         user = null;
@@ -121,7 +121,7 @@ public class UserTest extends TestCase {
 
         // remove test user
         mgr.removeUser(user);
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         // make sure user no longer exists
         user = null;
@@ -139,8 +139,8 @@ public class UserTest extends TestCase {
         User user = null;
 
         // add test user
-        User testUser = TestUtils.setupUser("userTestUser");
-        TestUtils.endSession(true);
+        User testUser = Utils.setupUser("userTestUser");
+        Utils.endSession(true);
 
         // lookup by id
         String userId = testUser.getUserId();
@@ -168,14 +168,14 @@ public class UserTest extends TestCase {
         // make sure disable users are not returned
         user.setEnabled(Boolean.FALSE);
         mgr.saveUser(user);
-        TestUtils.endSession(true);
+        Utils.endSession(true);
         user = null;
         user = mgr.getUserByUserId(testUser.getUserId(), Boolean.TRUE);
         assertNull(user);
 
         // remove test user
-        TestUtils.teardownUser(testUser.getUserId());
-        TestUtils.endSession(true);
+        Utils.teardownUser(testUser.getUserId());
+        Utils.endSession(true);
     }
 
 
@@ -188,13 +188,13 @@ public class UserTest extends TestCase {
         User user = null;
 
         // add test user
-        User testUser = TestUtils.setupUser("roleTestUser");
-        TestUtils.endSession(true);
+        User testUser = Utils.setupUser("roleTestUser");
+        Utils.endSession(true);
 
         user = mgr.getUserByUserId(testUser.getUserId());
         assertNotNull(user);
         mgr.grantRole("editor", user);
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         user = mgr.getUserByUserId(testUser.getUserId());
         if (Config.getBooleanProperty("users.firstUserAdmin")) {
@@ -210,7 +210,7 @@ public class UserTest extends TestCase {
         // remove role
         mgr.revokeRole("editor",user);
         mgr.saveUser(user);
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         // check that role was removed
         user = null;
@@ -228,7 +228,7 @@ public class UserTest extends TestCase {
         // add role
         mgr.grantRole("editor", user);
         mgr.saveUser(user);
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         // check that role was added
         user = null;
@@ -244,8 +244,8 @@ public class UserTest extends TestCase {
             assertFalse(mgr.hasRole("admin", user.getUserId()));
         }
         // remove test user
-        TestUtils.teardownUser(testUser.getUserId());
-        TestUtils.endSession(true);
+        Utils.teardownUser(testUser.getUserId());
+        Utils.endSession(true);
     }
 
 

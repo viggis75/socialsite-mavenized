@@ -35,7 +35,7 @@
 
 package com.sun.socialsite.pojos;
 
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.business.*;
 import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
@@ -52,7 +52,7 @@ public class GroupPojoTest extends TestCase {
 
     @Before
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
     }
 
     /**
@@ -69,7 +69,7 @@ public class GroupPojoTest extends TestCase {
             gr.setName("mygrpName");
             gr.setDescription("mygrpDesc");
             mgr.saveGroup(gr);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(mgr.getGroupByHandle("mygrpHandle"));
             {
                 gr = mgr.getGroupByHandle("mygrpHandle");
@@ -77,12 +77,12 @@ public class GroupPojoTest extends TestCase {
                 updates.put("identification_name", "mygrpIdChanged");
                 gr.update(updates);
                 Factory.getSocialSite().flush();
-                TestUtils.endSession(true);
+                Utils.endSession(true);
 
                 gr = mgr.getGroupByHandle("mygrpHandle");
                 assertEquals("mygrpIdChanged",
                         gr.getProperty("identification_name").getValue());
-                TestUtils.endSession(true);
+                Utils.endSession(true);
             }
             {
                 gr = mgr.getGroupByHandle("mygrpHandle");
@@ -90,11 +90,11 @@ public class GroupPojoTest extends TestCase {
                 updates.put("junkname", "junkvalue");
                 gr.update(updates);
                 Factory.getSocialSite().flush();
-                TestUtils.endSession(true);
+                Utils.endSession(true);
 
                 gr = mgr.getGroupByHandle("mygrpHandle");
                 assertNull(gr.getProperty("junkname"));
-                TestUtils.endSession(true);
+                Utils.endSession(true);
             }
             {
                 gr = mgr.getGroupByHandle("mygrpHandle");
@@ -102,7 +102,7 @@ public class GroupPojoTest extends TestCase {
                 updates.put("identification_thumbnailUrl", "http://x.y.z/someurl");
                 gr.update(updates);
                 Factory.getSocialSite().flush();
-                TestUtils.endSession(true);
+                Utils.endSession(true);
             }
             {
                 gr = mgr.getGroupByHandle("mygrpHandle");
@@ -115,7 +115,7 @@ public class GroupPojoTest extends TestCase {
                 updates.put("contact_emails_3_type", "Other");            
                 gr.update(updates);
                 Factory.getSocialSite().flush();
-                TestUtils.endSession(true);
+                Utils.endSession(true);
 
                 gr = mgr.getGroupByHandle("mygrpHandle");
                 assertEquals("e2@sun.com",
@@ -126,7 +126,7 @@ public class GroupPojoTest extends TestCase {
                 updates.put("contact_emails_3_type", "zzz_DELETE_zzz");            
                 gr.update(deletes);
                 Factory.getSocialSite().flush();
-                TestUtils.endSession(true);
+                Utils.endSession(true);
 
                 gr = mgr.getGroupByHandle("mygrpHandle");
                 assertNull(gr.getProperty("contact_emails_3_address"));
