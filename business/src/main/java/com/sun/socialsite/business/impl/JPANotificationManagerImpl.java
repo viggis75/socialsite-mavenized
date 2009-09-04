@@ -44,6 +44,7 @@ import com.sun.socialsite.pojos.Group;
 import com.sun.socialsite.pojos.MessageContent;
 import com.sun.socialsite.pojos.Profile;
 import java.util.List;
+import java.util.ArrayList;
 import javax.persistence.Query;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -162,7 +163,8 @@ public class JPANotificationManagerImpl extends JPAMessageContentManagerImpl imp
 
     public List<MessageContent> getUserInbox(Profile profile, int offset, int length)
             throws SocialSiteException {
-        List<MessageContent> messages = getSystemNotifications(0, -1);
+        List<MessageContent> messages = new ArrayList<MessageContent>();
+        messages.addAll(getSystemNotifications(0, -1));
         messages.addAll(getNotificationsByTypeAndLabel(profile,
                 MessageContent.NOTIFICATION, INBOX, offset, length));
         messages.addAll(this.getGroupNotificationsForUser(0, -1, profile));

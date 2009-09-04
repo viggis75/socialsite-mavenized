@@ -35,7 +35,7 @@
 
 package com.sun.socialsite.business;
 
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.pojos.Group;
 import com.sun.socialsite.pojos.GroupRelationship;
 import com.sun.socialsite.pojos.GroupRequest;
@@ -57,7 +57,7 @@ public class GroupTest extends TestCase {
 
 
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
 
     }
 
@@ -82,20 +82,20 @@ public class GroupTest extends TestCase {
             for (Group e : all) {
                 mgr.removeGroup(e);
             }
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             Group group1 = new Group();
             group1.setName("group1");
             group1.setHandle("group1");
             mgr.saveGroup(group1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(mgr.getGroupByHandle("group1"));
 
             Group group2 = new Group();
             group2.setName("group2");
             group2.setHandle("group2");
             mgr.saveGroup(group2);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(mgr.getGroupByHandle("group2"));
 
             List<Group> results1 = mgr.getOldestGroups(0, -1);
@@ -109,10 +109,10 @@ public class GroupTest extends TestCase {
             assertTrue(group1.equals(results2.get(1)));
 
             mgr.removeGroup(mgr.getGroupByHandle("group1"));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             mgr.removeGroup(mgr.getGroupByHandle("group2"));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             assertNull(mgr.getGroupByHandle("group1"));
             assertNull(mgr.getGroupByHandle("group2"));
@@ -138,13 +138,13 @@ public class GroupTest extends TestCase {
 
             // create persona dave
             Profile profile1 = new Profile();
-            profile1.setUserId("snoopdave");
+            profile1.setUserId("snoopdave3");
             profile1.setFirstName("David");
             profile1.setMiddleName("Mason");
             profile1.setLastName("Johnson");
             profile1.setPrimaryEmail("davidm.johnson@sun.com");
             pmgr.saveProfile(profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             GroupManager mgr = Factory.getSocialSite().getGroupManager();
             assertNotNull(mgr);
@@ -154,7 +154,7 @@ public class GroupTest extends TestCase {
             group3.setHandle("group3");
             group3.setName("group3");
             mgr.saveGroup(group3);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             // verify that group exists
             group3 = mgr.getGroupByHandle("group3");
             assertNotNull(group3);
@@ -163,12 +163,12 @@ public class GroupTest extends TestCase {
             Profile snoopdave = pmgr.getProfile(profile1.getId());
             assertTrue("New membership request should return true",
                     mgr.requestMembership(group3, snoopdave));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             // duplicate request should be ignored
             snoopdave = pmgr.getProfile(profile1.getId());
             assertFalse("Duplicate membership request should return false",
                     mgr.requestMembership(group3, snoopdave));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             // verify that request exists
             group3 = mgr.getGroupByHandle("group3");
             List<GroupRequest> nreqs = mgr.getMembershipRequestsByGroup(group3, 0, -1);
@@ -177,7 +177,7 @@ public class GroupTest extends TestCase {
             // accept request from snoopdave to join group3
             GroupRequest nreq = nreqs.get(0);
             mgr.acceptMembership(nreq);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // verify that snoopdave is member of group3
             snoopdave = pmgr.getProfile(profile1.getId());
@@ -186,7 +186,7 @@ public class GroupTest extends TestCase {
 
             // remove group relationship
             mgr.removeMembership(groups.get(0).getGroup(), snoopdave);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // verify that relationship is gone
             snoopdave = pmgr.getProfile(profile1.getId());
@@ -196,15 +196,15 @@ public class GroupTest extends TestCase {
 
             // remove the snoopdave profile
             pmgr.removeProfile(snoopdave);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // remove the group
             group3 = mgr.getGroupByHandle("group3");
             mgr.removeGroup(group3);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // assert that profile and group are gone
-            assertNull(pmgr.getProfileByUserId("snoopdave"));
+            assertNull(pmgr.getProfileByUserId("snoopdave3"));
             assertNull(mgr.getGroupByHandle("group3"));
 
         } catch (Exception e) {
@@ -230,7 +230,7 @@ public class GroupTest extends TestCase {
             profile1.setLastName("Kaur");
             profile1.setPrimaryEmail("manveen.kaur@sun.com");
             pmgr.saveProfile(profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             GroupManager mgr = Factory.getSocialSite().getGroupManager();
             assertNotNull(mgr);
@@ -240,7 +240,7 @@ public class GroupTest extends TestCase {
             group5.setHandle("group5");
             group5.setPolicy(Group.Policy.allowAll);
             mgr.createGroup(group5, profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(mgr.getGroupByHandle("group5"));
 
             // verify that manveen is the founder of the group
@@ -255,17 +255,17 @@ public class GroupTest extends TestCase {
             profile2.setLastName("Kaur");
             profile2.setPrimaryEmail("m2.kaur@sun.com");
             pmgr.saveProfile(profile2);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             Profile m2 = pmgr.getProfile(profile2.getId());
             // create request from manveen to join group5
             assertTrue("New membership request should return true",
                     mgr.requestMembership(group5, m2));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             assertFalse("Duplicate membership request should return false",
                     mgr.requestMembership(group5, m2));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // verify that request exists
             group5 = mgr.getGroupByHandle("group5");
@@ -275,7 +275,7 @@ public class GroupTest extends TestCase {
             // accept request from manveen to join group5
             GroupRequest nreq = nreqs.get(0);
             mgr.acceptMembership(nreq);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // verify that manveen is member of group5
             groups = mgr.getMembershipsByProfile(m2, 0, -1);
@@ -283,7 +283,7 @@ public class GroupTest extends TestCase {
 
             // remove group relationship
             mgr.removeMembership(groups.get(0).getGroup(), m2);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // verify that relationship is gone
             manveen = pmgr.getProfile(profile1.getId());
@@ -295,12 +295,12 @@ public class GroupTest extends TestCase {
             // remove the profiles
             pmgr.removeProfile(manveen);
             pmgr.removeProfile(m2);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // remove the group
             group5 = mgr.getGroupByHandle("group5");
             mgr.removeGroup(group5);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // assert that removals worked
             assertNull(pmgr.getProfileByUserId("manveen"));
@@ -330,7 +330,7 @@ public class GroupTest extends TestCase {
             profile1.setLastName("Jee");
             profile1.setPrimaryEmail("admin@sun.com");
             pmgr.saveProfile(profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             GroupManager mgr = Factory.getSocialSite().getGroupManager();
             assertNotNull(mgr);
@@ -340,7 +340,7 @@ public class GroupTest extends TestCase {
             group5.setHandle("club");
             group5.setPolicy(Group.Policy.adminOnly);
             mgr.createGroup(group5, profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(mgr.getGroupByHandle("club"));
 
             // verify that manveen is the founder of the group
@@ -355,17 +355,17 @@ public class GroupTest extends TestCase {
             profile2.setLastName("Kaur");
             profile2.setPrimaryEmail("m2.kaur@sun.com");
             pmgr.saveProfile(profile2);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             Profile m2 = pmgr.getProfile(profile2.getId());
             // create request from manveen to join group5
             assertTrue("New membership request should return true",
                     mgr.requestMembership(group5, m2));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             assertFalse("Duplicate membership request should return false",
                     mgr.requestMembership(group5, m2));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // verify that request exists
             group5 = mgr.getGroupByHandle("club");
@@ -375,7 +375,7 @@ public class GroupTest extends TestCase {
             // accept request from manveen to join the club
             GroupRequest nreq = nreqs.get(0);
             mgr.acceptAsGroupAdmin(nreq);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // verify that manveen is member of group5
             groups = mgr.getMembershipsByProfile(m2, 0, -1);
@@ -384,7 +384,7 @@ public class GroupTest extends TestCase {
 
             // remove group relationship
             mgr.removeMembership(groups.get(0).getGroup(), m2);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // verify that relationship is gone
             manveen = pmgr.getProfile(profile1.getId());
@@ -395,12 +395,12 @@ public class GroupTest extends TestCase {
             // remove the profile
             pmgr.removeProfile(manveen);
             pmgr.removeProfile(m2);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // remove the group
             group5 = mgr.getGroupByHandle("club");
             mgr.removeGroup(group5);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNull(mgr.getGroupByHandle("club"));
 
         } catch (Exception e) {
@@ -425,7 +425,7 @@ public class GroupTest extends TestCase {
             founder.setLastName("Stone");
             founder.setPrimaryEmail("admin@sun.com");
             pmgr.saveProfile(founder);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // create some guy
             Profile guy = new Profile();
@@ -434,7 +434,7 @@ public class GroupTest extends TestCase {
             guy.setLastName("Guy");
             guy.setPrimaryEmail("someguy@someplace.net");
             pmgr.saveProfile(guy);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // create group
             Group group = new Group();
@@ -442,7 +442,7 @@ public class GroupTest extends TestCase {
             group.setHandle("rockclub");
             group.setPolicy(Group.Policy.adminOnly);
             mgr.createGroup(group, founder);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(mgr.getGroupByHandle("rockclub"));
 
             // grant founder and guy admin rights
@@ -450,7 +450,7 @@ public class GroupTest extends TestCase {
             group = mgr.getGroupByHandle("rockclub");
             mgr.grantAdminRights(group, founder);
             mgr.grantAdminRights(group, guy);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             
             // guy should be member and admin
             assertTrue(mgr.isMember(group, guy));
@@ -464,12 +464,12 @@ public class GroupTest extends TestCase {
             pmgr.removeProfile(guy);
             founder = pmgr.getProfile(founder.getId());
             pmgr.removeProfile(founder);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // remove the group
             group = mgr.getGroupByHandle("rockclub");
             mgr.removeGroup(group);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNull(mgr.getGroupByHandle("rockclub"));
 
         } catch (Exception e) {

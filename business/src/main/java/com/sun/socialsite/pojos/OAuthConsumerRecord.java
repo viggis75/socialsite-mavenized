@@ -40,6 +40,8 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
+
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerIndex;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret;
 
@@ -59,7 +61,10 @@ public class OAuthConsumerRecord implements Serializable {
     private String consumerSecret;
     private String callbackUrl;
     private BasicOAuthStoreConsumerKeyAndSecret.KeyType keyType;
-    private Timestamp updated;
+    @Version
+    private Timestamp version;
+    
+    private Timestamp updated = new Timestamp(new Date().getTime());
 
     public OAuthConsumerRecord() {}
 

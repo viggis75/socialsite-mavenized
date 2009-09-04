@@ -35,7 +35,7 @@
 
 package com.sun.socialsite.business;
 
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.pojos.Group;
 import com.sun.socialsite.pojos.GroupRequest;
 import com.sun.socialsite.pojos.MessageContent;
@@ -65,12 +65,12 @@ public class NotificationsTest extends TestCase {
 
     @Override
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
-        aa = TestUtils.setupPerson("aa", "user", "a", "a@sun.com");
-        bb = TestUtils.setupPerson("bb", "user", "b", "b@sun.com");
-        TestUtils.setupPerson("cc", "user", "c", "c@sun.com");
-        TestUtils.setupPerson("dd", "user", "d", "d@sun.com");
-        TestUtils.endSession(true);
+        Utils.setupSocialSite();
+        aa = Utils.setupPerson("aa", "user", "a", "a@sun.com");
+        bb = Utils.setupPerson("bb", "user", "b", "b@sun.com");
+        Utils.setupPerson("cc", "user", "c", "c@sun.com");
+        Utils.setupPerson("dd", "user", "d", "d@sun.com");
+        Utils.endSession(true);
     }
 
     public static Test suite() {
@@ -80,11 +80,11 @@ public class NotificationsTest extends TestCase {
 
     @Override
     public void tearDown() throws Exception {
-        TestUtils.teardownPerson("aa");
-        TestUtils.teardownPerson("bb");
-        TestUtils.teardownPerson("cc");
-        TestUtils.teardownPerson("dd");
-        TestUtils.endSession(true);
+        Utils.teardownPerson("aa");
+        Utils.teardownPerson("bb");
+        Utils.teardownPerson("cc");
+        Utils.teardownPerson("dd");
+        Utils.endSession(true);
     }
 
     /*
@@ -105,7 +105,7 @@ public class NotificationsTest extends TestCase {
             Group nullGroup = null; // null group means not sent to one person
             mgr.recordNotification(aa, bb, nullGroup,
                 MessageContent.NOTIFICATION, SUBJECT, BODY, true);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // check sent/received
             assertEquals(0, mgr.getUserInbox(aa, 0, -1).size());
@@ -133,7 +133,7 @@ public class NotificationsTest extends TestCase {
             mgr.recordSystemNotification(SUBJECT + "b", BODY + "b");
             mgr.recordSystemNotification(SUBJECT + "c", BODY + "c");
             mgr.recordSystemNotification(SUBJECT + "d", BODY + "d");
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // check number received
             List<MessageContent> nots = mgr.getSystemNotifications(0, -1);
@@ -167,12 +167,12 @@ public class NotificationsTest extends TestCase {
             for (MessageContent mc : all) {
                 mgr.removeNotification(mc.getId(), aa);
             }
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             all = mgr.getSystemNotifications(0, -1);
             assertTrue(all.isEmpty());
 
             mgr.recordSystemNotification(SUBJECT, BODY);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // both users should now have one message
             assertEquals(1, mgr.getUserInbox(aa, 0, -1).size());
@@ -214,7 +214,7 @@ public class NotificationsTest extends TestCase {
             for (MessageContent mc : all) {
                 mgr.removeNotification(mc.getId(), aa);
             }
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             all = mgr.getSystemNotifications(0, -1);
             assertTrue(all.isEmpty());
 
@@ -230,7 +230,7 @@ public class NotificationsTest extends TestCase {
             throw e;
         } finally {
             try {
-                TestUtils.teardownGroup(GROUP_HANDLE);
+                Utils.teardownGroup(GROUP_HANDLE);
             } catch (Throwable t) {
                 // don't really care, just don't want this to mask anything
             }
@@ -256,7 +256,7 @@ public class NotificationsTest extends TestCase {
                 continue;
             mgr.removeNotification(mc.getId(), bb);
         }
-        TestUtils.endSession(true);
+        Utils.endSession(true);
     }
 
     private Group clearGroupsAndCreate(String handle) throws Exception {
@@ -268,9 +268,9 @@ public class NotificationsTest extends TestCase {
         for (Group e : all) {
             mgr.removeGroup(e);
         }
-        TestUtils.endSession(true);
-        g = TestUtils.setupGroup(handle);
-        TestUtils.endSession(true);
+        Utils.endSession(true);
+        g = Utils.setupGroup(handle);
+        Utils.endSession(true);
         assertNotNull(g);
         return g;
     }
@@ -283,14 +283,14 @@ public class NotificationsTest extends TestCase {
         for (Profile p : ps) {
             mgr.requestMembership(g, p);
         }
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         List<GroupRequest> reqs = mgr.getMembershipRequestsByGroup(g, 0, -1);
         assertEquals(ps.size(), reqs.size());
         for (GroupRequest req : reqs) {
             mgr.acceptMembership(req);
         }
-        TestUtils.endSession(true);
+        Utils.endSession(true);
     }
 
 }

@@ -39,6 +39,7 @@ import com.sun.socialsite.business.impl.JPAListenerManagerImpl;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.UUID;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -90,7 +91,9 @@ public class AppRegistration implements Serializable {
     private Timestamp created = new Timestamp(System.currentTimeMillis());
 
     @Version
-    private Timestamp updated = new Timestamp(created.getTime());
+    private Timestamp version;
+    
+    private Timestamp updated = new Timestamp(new Date().getTime());
 
     private String comment;
 

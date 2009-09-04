@@ -129,7 +129,9 @@ public class Group implements Serializable {
     private String imageType = null;
     private Timestamp created = new Timestamp(System.currentTimeMillis());
     @Version
-    private Timestamp updated = new Timestamp(created.getTime());
+    private Timestamp version;
+    
+    private Timestamp updated = new Timestamp(new Date().getTime());
 
     // locale of group
     protected String locale = null;

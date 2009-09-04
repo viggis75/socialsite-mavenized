@@ -39,7 +39,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.business.AppManager;
 import com.sun.socialsite.business.Factory;
 import com.sun.socialsite.business.ProfileManager;
@@ -88,7 +88,7 @@ public class GadgetHandlerTest extends TestCase {
         registry = new DefaultHandlerRegistry(null, Sets.<Object>newHashSet(handler), converter,
             new HandlerExecutionListener.NoOpHandlerExecutionListener());
 
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
     }
 
 
@@ -118,8 +118,8 @@ public class GadgetHandlerTest extends TestCase {
             AppManager appManager = Factory.getSocialSite().getAppManager();
             assertNotNull(appManager);
 
-            johndoe = TestUtils.setupPerson("john.doe", "John", "Doe", "John.Doe@mycompany.com");
-            TestUtils.endSession(true);
+            johndoe = Utils.setupPerson("john.doe", "John", "Doe", "John.Doe@mycompany.com");
+            Utils.endSession(true);
 
             // Find an existing App (for later use)
             List<App> apps = appManager.getApps(0, 1);
@@ -142,7 +142,7 @@ public class GadgetHandlerTest extends TestCase {
 
             JSONObject result = (JSONObject)(future.get());
             assertEquals(201, result.getInt("code"));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // And make sure it was stored (via the business interface)
             johndoe = profileManager.getProfileByUserId(johndoe.getUserId());
@@ -151,7 +151,7 @@ public class GadgetHandlerTest extends TestCase {
             assertEquals(1, appInstances.size());
             AppInstance appInstance = appInstances.iterator().next();
             assertEquals(app, appInstance.getApp());
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Attempt to delete appInstance (via the JSON interface) without an appropriate token
             path = String.format("/gadgets/%d", appInstance.getId());
@@ -166,7 +166,7 @@ public class GadgetHandlerTest extends TestCase {
                 expectedException = e;
             }
             assertNotNull("DELETE with an inappropriate token should cause an exception", expectedException);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // And make sure it's still there (via the business interface)
             johndoe = profileManager.getProfileByUserId(johndoe.getUserId());
@@ -175,7 +175,7 @@ public class GadgetHandlerTest extends TestCase {
             assertEquals(1, appInstances.size());
             appInstance = appInstances.iterator().next();
             assertEquals(app, appInstance.getApp());
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Delete appInstance (via the JSON interface) with an appropriate token
             token.setModuleId(appInstance.getId());
@@ -187,17 +187,17 @@ public class GadgetHandlerTest extends TestCase {
             result = (JSONObject)(future.get());
             int resultCode = result.getInt("code");
             assertTrue("result should have a 2xx status", ((resultCode >= 200) && (resultCode <= 299)));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Make sure appInstance is now gone (via the business interface)
             johndoe = profileManager.getProfileByUserId(johndoe.getUserId());
             assertNotNull(johndoe);
             appInstances = appManager.getAppInstancesByCollection(johndoe, "PROFILE");
             assertEquals(0, appInstances.size());
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
         } finally {
-            if(johndoe != null) TestUtils.teardownPerson(johndoe.getUserId());
+            if(johndoe != null) Utils.teardownPerson(johndoe.getUserId());
         }
 
         log.info("END");

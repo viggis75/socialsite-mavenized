@@ -196,8 +196,7 @@ public class JPAProfileManagerImpl extends AbstractManagerImpl implements Profil
      * @param userId    User ID to filter on, or null if none
      * @param groupId   Group ID to filter on, or null if none
      * @param viewerId  User ID of viewer requesting data
-     * @param sort      Sort orde
-     * @param filter    Filter (all, topFriends, hasApp)
+     * @param collectionOptions  
      * @param first     Index into result collection
      * @param max       Max results to return
      * @param details   Properties to be returned

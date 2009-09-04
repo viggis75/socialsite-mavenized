@@ -36,7 +36,7 @@
 package com.sun.socialsite.business;
 
 import com.sun.socialsite.SocialSiteException;
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.config.Config;
 import com.sun.socialsite.pojos.App;
 import com.sun.socialsite.pojos.PermissionGrant;
@@ -68,7 +68,7 @@ public class PermissionTest extends TestCase {
 
 
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
 
     }
 
@@ -103,7 +103,7 @@ public class PermissionTest extends TestCase {
         tom.setLastName("Cat");
         tom.setPrimaryEmail("thomas.d.cat@cartoons.com");
         profileManager.saveProfile(tom);
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         // Create another Profile (for later use)
         Profile jerry = new Profile();
@@ -113,7 +113,7 @@ public class PermissionTest extends TestCase {
         jerry.setLastName("Mouse");
         jerry.setPrimaryEmail("jerry.d.mouse@cartoons.com");
         profileManager.saveProfile(jerry);
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         // Create a ConsumerContext with these profiles
         JSONObject json = new JSONObject();
@@ -148,7 +148,7 @@ public class PermissionTest extends TestCase {
         // remove profiles
         profileManager.removeProfile(profileManager.getProfileByUserId("tom"));
         profileManager.removeProfile(profileManager.getProfileByUserId("jerry"));
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         // assert that removals worked
         assertNull(profileManager.getProfileByUserId("tom"));

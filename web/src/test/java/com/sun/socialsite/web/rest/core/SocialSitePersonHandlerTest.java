@@ -39,7 +39,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.business.Factory;
 import com.sun.socialsite.business.RelationshipManager;
 import com.sun.socialsite.business.ProfileManager;
@@ -85,12 +85,12 @@ public class SocialSitePersonHandlerTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
 
         Injector injector = Guice.createInjector(new SocialSiteGuiceModule());
         converter = injector.getInstance(BeanJsonConverter.class);
 
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
         List<App> apps = Factory.getSocialSite().getAppManager().getApps(0, 1);
         token = new FakeSocialSiteGadgetToken();
         token.setAppId(apps.get(0).getId());
@@ -107,9 +107,9 @@ public class SocialSitePersonHandlerTest extends TestCase {
 
         log.info("BEGIN");
 
-        Profile jack = TestUtils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
-        Profile sue = TestUtils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
-        TestUtils.endSession(true);
+        Profile jack = Utils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
+        Profile sue = Utils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
+        Utils.endSession(true);
 
         // Jack requests friendship with Sue by posting Sue to his friends list
         token.setViewerId(jack.getUserId());
@@ -136,10 +136,10 @@ public class SocialSitePersonHandlerTest extends TestCase {
         assertNotNull(fmgr.getRelationshipRequest(jack, sue));
 
         fmgr.removeRelationshipRequest(fmgr.getRelationshipRequest(jack, sue));
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
-        TestUtils.teardownPerson(jack.getUserId());
-        TestUtils.teardownPerson(sue.getUserId());
+        Utils.teardownPerson(jack.getUserId());
+        Utils.teardownPerson(sue.getUserId());
 
         log.info("END");
 
@@ -150,9 +150,9 @@ public class SocialSitePersonHandlerTest extends TestCase {
 
         log.info("BEGIN");
 
-        Profile jack = TestUtils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
-        Profile sue = TestUtils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
-        TestUtils.endSession(true);
+        Profile jack = Utils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
+        Profile sue = Utils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
+        Utils.endSession(true);
 
         // Jack requests friendship with Sue by posting Sue to his friends list
         token.setViewerId(jack.getUserId());
@@ -192,10 +192,10 @@ public class SocialSitePersonHandlerTest extends TestCase {
         jack = pmgr.getProfile(jack.getId());
         sue = pmgr.getProfile(sue.getId());
         fmgr.removeRelationshipRequest(fmgr.getRelationshipRequest(jack, sue));
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
-        TestUtils.teardownPerson(jack.getUserId());
-        TestUtils.teardownPerson(sue.getUserId());
+        Utils.teardownPerson(jack.getUserId());
+        Utils.teardownPerson(sue.getUserId());
 
         log.info("END");
 
@@ -206,9 +206,9 @@ public class SocialSitePersonHandlerTest extends TestCase {
 
         log.info("BEGIN");
 
-        Profile jack = TestUtils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
-        Profile sue = TestUtils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
-        TestUtils.endSession(true);
+        Profile jack = Utils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
+        Profile sue = Utils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
+        Utils.endSession(true);
 
         // Jack requests friendship with Sue by posting Sue to his friends list
 
@@ -241,8 +241,8 @@ public class SocialSitePersonHandlerTest extends TestCase {
         sue = pmgr.getProfile(sue.getId());
         assertNotNull(fmgr.getRelationship(jack, sue));
 
-        TestUtils.teardownPerson(jack.getUserId());
-        TestUtils.teardownPerson(sue.getUserId());
+        Utils.teardownPerson(jack.getUserId());
+        Utils.teardownPerson(sue.getUserId());
 
         log.info("END");
 
@@ -253,9 +253,9 @@ public class SocialSitePersonHandlerTest extends TestCase {
 
         log.info("BEGIN");
 
-        Profile jack = TestUtils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
-        Profile sue = TestUtils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
-        TestUtils.endSession(true);
+        Profile jack = Utils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
+        Profile sue = Utils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
+        Utils.endSession(true);
 
         // Jack requests friendship with Sue by posting Sue to his friends list
         token.setViewerId(jack.getUserId());
@@ -309,8 +309,8 @@ public class SocialSitePersonHandlerTest extends TestCase {
         sue = pmgr.getProfile(sue.getId());
         assertNull(fmgr.getRelationshipRequest(jack, sue));
 
-        TestUtils.teardownPerson(jack.getUserId());
-        TestUtils.teardownPerson(sue.getUserId());
+        Utils.teardownPerson(jack.getUserId());
+        Utils.teardownPerson(sue.getUserId());
 
         log.info("END");
 
@@ -321,14 +321,14 @@ public class SocialSitePersonHandlerTest extends TestCase {
 
         log.info("BEGIN");
 
-        Profile jack = TestUtils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
-        Profile sue = TestUtils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
-        TestUtils.endSession(true);
+        Profile jack = Utils.setupPerson("jack.flappy", "Jack", "Flappy", "jack.flappy@example.com");
+        Profile sue = Utils.setupPerson("sue.who", "Sue", "Who", "sue.who@example.com");
+        Utils.endSession(true);
 
         ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
         RelationshipManager fmgr = Factory.getSocialSite().getRelationshipManager();
         fmgr.createMutualRelationship(jack, 1, sue, 1, "met at work");
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         // Verify that friend relationship exists
         jack = pmgr.getProfile(jack.getId());
@@ -354,8 +354,8 @@ public class SocialSitePersonHandlerTest extends TestCase {
         sue = pmgr.getProfile(sue.getId());
         assertNull(fmgr.getRelationship(sue, jack));
 
-        TestUtils.teardownPerson(jack.getUserId());
-        TestUtils.teardownPerson(sue.getUserId());
+        Utils.teardownPerson(jack.getUserId());
+        Utils.teardownPerson(sue.getUserId());
 
         log.info("END");
 

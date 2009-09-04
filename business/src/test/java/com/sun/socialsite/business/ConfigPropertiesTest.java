@@ -35,7 +35,7 @@
 
 package com.sun.socialsite.business;
 
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.pojos.RuntimeConfigProperty;
 import java.util.Map;
 import junit.framework.TestCase;
@@ -54,7 +54,7 @@ public class ConfigPropertiesTest extends TestCase {
 
 
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
 
     }
 
@@ -74,7 +74,7 @@ public class ConfigPropertiesTest extends TestCase {
 
         // remember, the properties table is initialized during SocialSite startup
         ConfigPropertiesManager mgr = Factory.getSocialSite().getConfigPropertiesManager();
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         RuntimeConfigProperty prop = null;
 
@@ -85,7 +85,7 @@ public class ConfigPropertiesTest extends TestCase {
         // update a property
         prop.setValue("testtest");
         mgr.saveProperty(prop);
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         // make sure property was updated
         prop = null;
@@ -104,7 +104,7 @@ public class ConfigPropertiesTest extends TestCase {
         prop = props.get("site.description");
         prop.setValue("blahblah");
         mgr.saveProperties(props);
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         // make sure all properties were updated
         props = mgr.getProperties();

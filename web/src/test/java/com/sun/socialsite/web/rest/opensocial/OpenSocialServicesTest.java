@@ -38,7 +38,7 @@ package com.sun.socialsite.web.rest.opensocial;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.business.SocialSiteActivityManager;
 import com.sun.socialsite.business.AppManager;
 import com.sun.socialsite.business.Factory;
@@ -75,7 +75,7 @@ public class OpenSocialServicesTest extends JsonDbOpensocialServiceTest {
         Injector injector = Guice.createInjector(new SocialSiteGuiceModule());
         db = injector.getInstance(OpenSocialServices.class);
 
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
 
         ProfileManager profileManager = Factory.getSocialSite().getProfileManager();
         UserManager    userManager = Factory.getSocialSite().getUserManager();

@@ -40,6 +40,8 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
+
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreTokenIndex;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
 
@@ -57,7 +59,10 @@ public class OAuthAccessorRecord implements Serializable {
     private String tokenSecret;
     private String sessionHandle;
     private long   expireMillis;
-    private Timestamp updated;
+    @Version
+    private Timestamp version;
+    
+    private Timestamp updated = new Timestamp(new Date().getTime());
 
     public OAuthAccessorRecord() {}
 

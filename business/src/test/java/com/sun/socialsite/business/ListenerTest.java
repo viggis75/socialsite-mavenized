@@ -35,7 +35,7 @@
 
 package com.sun.socialsite.business;
 
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.pojos.Profile;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,7 +64,7 @@ public class ListenerTest extends TestCase {
 
 
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
 
     }
 
@@ -98,7 +98,7 @@ public class ListenerTest extends TestCase {
             profile1.setLastName("Doe");
             profile1.setPrimaryEmail("john.f.doe@example.com");
             profileManager.saveProfile(profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
             assertNotNull(profileManager.getProfileByUserId("john"));
 
             // Verify that we received expected events for Step 1
@@ -113,7 +113,7 @@ public class ListenerTest extends TestCase {
             Date d1 = profile1a.getUpdated();
             profile1a.setSurtitle("Jr");
             profileManager.saveProfile(profile1a);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Verify that we received expected events for Step 2
             assertEquals(PostLoad.class, profileEvents.get(4).annotationClass);
@@ -128,7 +128,7 @@ public class ListenerTest extends TestCase {
             assertNotNull(profile1b);
             Date d2 = profile1b.getUpdated();
             assertTrue("d2 should be greater than d1", (d2.getTime() > d1.getTime()));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Verify that we received expected events for Step 3
             assertEquals(PostLoad.class, profileEvents.get(7).annotationClass);
@@ -137,7 +137,7 @@ public class ListenerTest extends TestCase {
             // Step 4: Delete john's profile
             Profile profile1c = profileManager.getProfileByUserId("john");
             profileManager.removeProfile(profile1c);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // Verify that we received expected events for Step 4
             assertEquals(PostLoad.class, profileEvents.get(8).annotationClass);

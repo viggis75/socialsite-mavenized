@@ -37,7 +37,7 @@ package com.sun.socialsite.business;
 
 import com.sun.socialsite.SocialSiteException;
 import com.sun.socialsite.userapi.User;
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.pojos.RelationshipRequest;
 import com.sun.socialsite.pojos.Profile;
 import java.util.List;
@@ -63,7 +63,7 @@ public class FriendsTwoWayOnlyTest extends TestCase {
     // Assuming 
 
     public void setUp() throws Exception {
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
     }
 
 
@@ -86,19 +86,19 @@ public class FriendsTwoWayOnlyTest extends TestCase {
             ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
 
             // create user 1
-            User testUser1 = TestUtils.setupUser("testUser1");
-            Profile dave = TestUtils.setupProfile(testUser1, "Test", "User1");
+            User testUser1 = Utils.setupUser("testUser1");
+            Profile dave = Utils.setupProfile(testUser1, "Test", "User1");
             pmgr.saveProfile(dave);
 
             // create user 2
-            User testUser2 = TestUtils.setupUser("testUser2");
-            Profile friend = TestUtils.setupProfile(testUser2, "Test", "User2");
+            User testUser2 = Utils.setupUser("testUser2");
+            Profile friend = Utils.setupProfile(testUser2, "Test", "User2");
             pmgr.saveProfile(friend);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // request relationship from 1 to 2
             mgr.requestRelationship(dave, friend, FRIENDSHIP_LEVEL, "met at work");
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // assert requests exists
             dave = pmgr.getProfile(dave.getId());
@@ -107,7 +107,7 @@ public class FriendsTwoWayOnlyTest extends TestCase {
 
             // remove request
             mgr.removeRelationshipRequest(freqs.get(0));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // assert request is gone
             dave = pmgr.getProfile(dave.getId());
@@ -119,9 +119,9 @@ public class FriendsTwoWayOnlyTest extends TestCase {
             friend = pmgr.getProfile(friend.getId());
             pmgr.removeProfile(dave);
             pmgr.removeProfile(friend);
-            TestUtils.teardownUser(testUser1.getUserName());
-            TestUtils.teardownUser(testUser2.getUserName());
-            TestUtils.endSession(true);
+            Utils.teardownUser(testUser1.getUserName());
+            Utils.teardownUser(testUser2.getUserName());
+            Utils.endSession(true);
 
         } catch (Exception e) {
             log.error("Unexpected Exception", e);
@@ -149,7 +149,7 @@ public class FriendsTwoWayOnlyTest extends TestCase {
             profile1.setLastName("Johnson");
             profile1.setPrimaryEmail("davidm.johnson@sun.com");
             pmgr.saveProfile(profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             Profile profile2 = new Profile();
             profile2.setUserId("fred");
@@ -158,7 +158,7 @@ public class FriendsTwoWayOnlyTest extends TestCase {
             profile2.setLastName("Mortimer");
             profile2.setPrimaryEmail("fred@example.com");
             pmgr.saveProfile(profile2);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             RelationshipManager mgr = Factory.getSocialSite().getRelationshipManager();
             assertNotNull(mgr);
@@ -167,7 +167,7 @@ public class FriendsTwoWayOnlyTest extends TestCase {
             Profile snoopdave = pmgr.getProfile(profile1.getId());
             Profile fred = pmgr.getProfile(profile2.getId());
             mgr.requestRelationship(snoopdave, fred, FRIENDSHIP_LEVEL, "met at work");
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // verify that request exists
             snoopdave = pmgr.getProfile(snoopdave.getId());
@@ -188,7 +188,7 @@ public class FriendsTwoWayOnlyTest extends TestCase {
 
             // fred accepts the friend request
             mgr.acceptRelationshipRequest(freqs.get(0), 1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // verify that fred now friends with snoopdave
             fred = pmgr.getProfile(fred.getId());
@@ -197,7 +197,7 @@ public class FriendsTwoWayOnlyTest extends TestCase {
 
             // remove the two relationships between fred and snoopdave
             mgr.removeRelationships(snoopdave, fred);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // verify that relationships are gone
             snoopdave = pmgr.getProfile(snoopdave.getId());
@@ -210,7 +210,7 @@ public class FriendsTwoWayOnlyTest extends TestCase {
             snoopdave = pmgr.getProfile(snoopdave.getId());
             pmgr.removeProfile(snoopdave);
             pmgr.removeProfile(fred);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
         } catch (Exception e) {
             log.error("Unexpected Exception", e);
@@ -232,13 +232,13 @@ public class FriendsTwoWayOnlyTest extends TestCase {
 
             // create two people snoopdave and fred
             Profile profile1 = new Profile();
-            profile1.setUserId("snoopdave");
+            profile1.setUserId("snoopdave2");
             profile1.setFirstName("David");
             profile1.setMiddleName("Mason");
             profile1.setLastName("Johnson");
             profile1.setPrimaryEmail("davidm.johnson@sun.com");
             pmgr.saveProfile(profile1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             Profile profile2 = new Profile();
             profile2.setUserId("fred");
@@ -247,7 +247,7 @@ public class FriendsTwoWayOnlyTest extends TestCase {
             profile2.setLastName("Mortimer");
             profile2.setPrimaryEmail("fred@example.com");
             pmgr.saveProfile(profile2);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             RelationshipManager mgr = Factory.getSocialSite().getRelationshipManager();
             assertNotNull(mgr);
@@ -258,7 +258,7 @@ public class FriendsTwoWayOnlyTest extends TestCase {
             Profile snoopdave = pmgr.getProfile(profile1.getId());
             Profile fred = pmgr.getProfile(profile2.getId());
             mgr.requestRelationship(snoopdave, fred, FRIENDSHIP_LEVEL, "met at work");
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // verify that request exists
             // on snoopdave's end
@@ -287,7 +287,7 @@ public class FriendsTwoWayOnlyTest extends TestCase {
             // fred clarifies the friend request
 
             mgr.clarifyRelationshipRequest(toFredReqs.get(0), 1, "met at ACME Corporation");
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // verify that fred still not friends with snoopdave
             fred = pmgr.getProfile(fred.getId());
@@ -308,7 +308,7 @@ public class FriendsTwoWayOnlyTest extends TestCase {
 
             // snoopdave accepts the clarified request
             mgr.acceptRelationshipRequest(toDaveReqs.get(0), 1);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
 
             // verify that fred now friends with snoopdave with same how know message
@@ -323,7 +323,7 @@ public class FriendsTwoWayOnlyTest extends TestCase {
 
             // remove the two relationships between fred and snoopdave
             mgr.removeRelationships(snoopdave, fred);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // verify that relationships are gone
             snoopdave = pmgr.getProfile(snoopdave.getId());
@@ -336,7 +336,7 @@ public class FriendsTwoWayOnlyTest extends TestCase {
             snoopdave = pmgr.getProfile(snoopdave.getId());
             pmgr.removeProfile(snoopdave);
             pmgr.removeProfile(fred);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
         } catch (Exception e) {
             log.error("Unexpected Exception", e);
@@ -364,20 +364,20 @@ public class FriendsTwoWayOnlyTest extends TestCase {
             ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
             assertNotNull(pmgr);
 
-            User aliceUser = TestUtils.setupUser("alice");
-            Profile alice = TestUtils.setupProfile(aliceUser, "Alice", "Flappenpopper");
+            User aliceUser = Utils.setupUser("alice");
+            Profile alice = Utils.setupProfile(aliceUser, "Alice", "Flappenpopper");
             pmgr.saveProfile(alice);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
-            User bobUser = TestUtils.setupUser("bob");
-            Profile bob = TestUtils.setupProfile(bobUser, "Bob", "Smokeshifter");
+            User bobUser = Utils.setupUser("bob");
+            Profile bob = Utils.setupProfile(bobUser, "Bob", "Smokeshifter");
             pmgr.saveProfile(bob);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             alice = pmgr.getProfile(alice.getId());
             bob = pmgr.getProfile(bob.getId());
             mgr.requestRelationship(alice, bob, FRIENDSHIP_LEVEL, "met at work");
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // request relationship once
             alice = pmgr.getProfile(alice.getId());
@@ -389,7 +389,7 @@ public class FriendsTwoWayOnlyTest extends TestCase {
             try {
                 // request relatonship again
                 mgr.requestRelationship(alice, bob, FRIENDSHIP_LEVEL, "met at work");
-                TestUtils.endSession(true);
+                Utils.endSession(true);
             } catch (SocialSiteException sse) {
                 dupError = true;
             }
@@ -402,19 +402,19 @@ public class FriendsTwoWayOnlyTest extends TestCase {
             assertEquals(1, freqs.size());
 
             mgr.removeRelationshipRequest(freqs.get(0));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // remove the alice and bob profiles
             alice = pmgr.getProfile(alice.getId());
             bob= pmgr.getProfile(bob.getId());
             pmgr.removeProfile(alice);
             pmgr.removeProfile(bob);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             // remove alice and bob users
-            TestUtils.teardownUser(aliceUser.getUserId());
-            TestUtils.teardownUser(bobUser.getUserId());
-            TestUtils.endSession(true);
+            Utils.teardownUser(aliceUser.getUserId());
+            Utils.teardownUser(bobUser.getUserId());
+            Utils.endSession(true);
 
         } catch (Exception e) {
             log.error("Unexpected Exception", e);

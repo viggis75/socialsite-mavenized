@@ -38,6 +38,8 @@ package com.sun.socialsite.pojos;
 import com.sun.socialsite.business.impl.JPAListenerManagerImpl;
 import java.io.Serializable;
 import java.util.UUID;
+import java.util.Date;
+import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -45,6 +47,8 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Version;
+
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.logging.Log;
@@ -80,6 +84,11 @@ public class Category implements Serializable {
     // label to display for category
     private String label = null;
 
+    @Version
+    private Timestamp version;
+    
+    private Timestamp updated = new Timestamp(new Date().getTime());
+    
     public String getId() {
         return id;
     }

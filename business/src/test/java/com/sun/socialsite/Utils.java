@@ -33,7 +33,7 @@ import com.sun.socialsite.pojos.Profile;
 /**
  * Utility class for unit test classes.
  */
-public final class TestUtils {
+public final class Utils {
 
 
     public static void setupSocialSite() throws SocialSiteException {

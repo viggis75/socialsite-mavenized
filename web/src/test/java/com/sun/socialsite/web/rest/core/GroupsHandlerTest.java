@@ -39,7 +39,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.business.Factory;
 import com.sun.socialsite.pojos.App;
 import com.sun.socialsite.pojos.Group;
@@ -78,7 +78,7 @@ public class GroupsHandlerTest extends TestCase {
         Injector injector = Guice.createInjector(new SocialSiteGuiceModule());
         converter = injector.getInstance(BeanJsonConverter.class);
 
-        TestUtils.setupSocialSite();
+        Utils.setupSocialSite();
         List<App> apps = Factory.getSocialSite().getAppManager().getApps(0, 1);
         token = new FakeSocialSiteGadgetToken();
         token.setAppId(apps.get(0).getId());
@@ -93,7 +93,7 @@ public class GroupsHandlerTest extends TestCase {
 
         log.info("BEGIN");
 
-        Profile johndoe = TestUtils.setupPerson("john.doe", "John", "Doe", "John.Doe@mycompany.com");
+        Profile johndoe = Utils.setupPerson("john.doe", "John", "Doe", "John.Doe@mycompany.com");
         Group group1 = null;
         Group group2 = null;
         Group group3 = null;
@@ -109,10 +109,10 @@ public class GroupsHandlerTest extends TestCase {
 
             assertEquals(0, collection.getTotalResults());
 
-            group1 = TestUtils.setupGroup("testgroup1");
-            group2 = TestUtils.setupGroup("testgroup2");
-            group3 = TestUtils.setupGroup("testgroup3");
-            TestUtils.endSession(true);
+            group1 = Utils.setupGroup("testgroup1");
+            group2 = Utils.setupGroup("testgroup2");
+            group3 = Utils.setupGroup("testgroup3");
+            Utils.endSession(true);
 
             collection = (RestfulCollection)
                 operation.execute(params, new StringReader(""), token, converter).get();
@@ -121,10 +121,10 @@ public class GroupsHandlerTest extends TestCase {
             assertEquals(3, collection.getTotalResults());
 
         } finally {
-            if(group1 != null) TestUtils.teardownGroup(group1.getHandle());
-            if(group2 != null) TestUtils.teardownGroup(group2.getHandle());
-            if(group3 != null) TestUtils.teardownGroup(group3.getHandle());
-            if(johndoe != null) TestUtils.teardownPerson(johndoe.getUserId());
+            if(group1 != null) Utils.teardownGroup(group1.getHandle());
+            if(group2 != null) Utils.teardownGroup(group2.getHandle());
+            if(group3 != null) Utils.teardownGroup(group3.getHandle());
+            if(johndoe != null) Utils.teardownPerson(johndoe.getUserId());
         }
 
         log.info("END");
@@ -136,7 +136,7 @@ public class GroupsHandlerTest extends TestCase {
 
         log.info("BEGIN");
 
-        Profile johndoe = TestUtils.setupPerson(
+        Profile johndoe = Utils.setupPerson(
             "john.doe", "John", "Doe", "John.Doe@mycompany.com");
         Group group1 = null;
 
@@ -160,8 +160,8 @@ public class GroupsHandlerTest extends TestCase {
             assertTrue(notFoundError);
 
             // setup group
-            group1 = TestUtils.setupGroup("testgroup1");
-            TestUtils.endSession(true);
+            group1 = Utils.setupGroup("testgroup1");
+            Utils.endSession(true);
 
             // fetch it via handler
             JSONObject response = (JSONObject)
@@ -172,8 +172,8 @@ public class GroupsHandlerTest extends TestCase {
                 Group.Format.OPENSOCIAL, token.getViewerId()).toString(), response.toString());
 
         } finally {
-            if(group1 != null) TestUtils.teardownGroup(group1.getHandle());
-            if(johndoe != null) TestUtils.teardownPerson(johndoe.getUserId());
+            if(group1 != null) Utils.teardownGroup(group1.getHandle());
+            if(johndoe != null) Utils.teardownPerson(johndoe.getUserId());
         }
 
         log.info("END");
@@ -186,9 +186,9 @@ public class GroupsHandlerTest extends TestCase {
 
         log.info("BEGIN");
 
-        Profile johndoe = TestUtils.setupPerson("john.doe", "John", "Doe", "John.Doe@mycompany.com");
-        Profile janedoe = TestUtils.setupPerson("jane.doe", "Jane", "Doe", "Jane.Doe@mycompany.com");
-        TestUtils.endSession(true);
+        Profile johndoe = Utils.setupPerson("john.doe", "John", "Doe", "John.Doe@mycompany.com");
+        Profile janedoe = Utils.setupPerson("jane.doe", "Jane", "Doe", "Jane.Doe@mycompany.com");
+        Utils.endSession(true);
         Group group1 = null;
         Group group2 = null;
         Group group3 = null;
@@ -202,12 +202,12 @@ public class GroupsHandlerTest extends TestCase {
             setPathOperationAndParams("/groups/jane.doe", "GET", null, token, converter);
             assertNull(handler.handleItem(request).get());
             token.setViewerId(johndoe.getUserId());
-            group1 = TestUtils.setupGroup("testgroup1");
-            TestUtils.endSession(true);
+            group1 = Utils.setupGroup("testgroup1");
+            Utils.endSession(true);
             token.setViewerId(janedoe.getUserId());
-            group2 = TestUtils.setupGroup("testgroup2");
-            group3 = TestUtils.setupGroup("testgroup3");
-            group4 = TestUtils.setupGroup("testgroup4");
+            group2 = Utils.setupGroup("testgroup2");
+            group3 = Utils.setupGroup("testgroup3");
+            group4 = Utils.setupGroup("testgroup4");
             token.setViewerId(johndoe.getUserId());
             setPathOperationAndParams("/groups/john.doe", "GET", null, token, converter);
             JSONObject collection = (JSONObject) handler.handleItem(request).get();
@@ -222,12 +222,12 @@ public class GroupsHandlerTest extends TestCase {
             groupList = collection.getJSONArray("group");
             assertEquals(3, groupList.length());
         } finally {
-            if(group1 != null) TestUtils.teardownGroup(group1.getHandle());
-            if(group2 != null) TestUtils.teardownGroup(group2.getHandle());
-            if(group3 != null) TestUtils.teardownGroup(group3.getHandle());
-            if(group4 != null) TestUtils.teardownGroup(group4.getHandle());
-            if(johndoe != null) TestUtils.teardownPerson(johndoe.getUserId());
-            if(janedoe != null) TestUtils.teardownPerson(janedoe.getUserId());
+            if(group1 != null) Utils.teardownGroup(group1.getHandle());
+            if(group2 != null) Utils.teardownGroup(group2.getHandle());
+            if(group3 != null) Utils.teardownGroup(group3.getHandle());
+            if(group4 != null) Utils.teardownGroup(group4.getHandle());
+            if(johndoe != null) Utils.teardownPerson(johndoe.getUserId());
+            if(janedoe != null) Utils.teardownPerson(janedoe.getUserId());
         }
 
         log.info("END");

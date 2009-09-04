@@ -37,7 +37,7 @@ package com.sun.socialsite.web.rest.core;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.sun.socialsite.TestUtils;
+import com.sun.socialsite.Utils;
 import com.sun.socialsite.business.Factory;
 import com.sun.socialsite.business.GroupManager;
 import com.sun.socialsite.business.ProfileManager;
@@ -67,25 +67,25 @@ public class ViewerRelationshipTest extends TestCase {
         profile.setLastName("Flappenpopper");
         profile.setPrimaryEmail("jimmy@papercrafts.com");
         pmgr.saveProfile(profile);
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         // create jimmy's group
         Group group = new Group();
         group.setHandle("paperpopper");
         group.setName("Paper Poppers");
         gmgr.saveGroup(group);
-        TestUtils.endSession(true);
+        Utils.endSession(true);
 
         try {
             // get jimmy into the group
             profile = pmgr.getProfile(profile.getId());
             gmgr.requestMembership(group, profile);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             group = gmgr.getGroupById(group.getId());
             List<GroupRequest> reqs = gmgr.getMembershipRequestsByGroup(group, 0, -1);
             gmgr.acceptMembership(reqs.get(0));
-            TestUtils.endSession(true);
+            Utils.endSession(true);
 
             group = gmgr.getGroupById(group.getId());
             profile = pmgr.getProfile(profile.getId());
@@ -107,10 +107,10 @@ public class ViewerRelationshipTest extends TestCase {
             assertEquals(1, vrelObject.getGroups().size());
 
         } finally {
-            TestUtils.teardownGroup(group.getHandle());
+            Utils.teardownGroup(group.getHandle());
             profile = pmgr.getProfile(profile.getId());
             pmgr.removeProfile(profile);
-            TestUtils.endSession(true);
+            Utils.endSession(true);
         }
 
     }
