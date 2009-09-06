@@ -113,7 +113,7 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <forkMode>never</forkMode>
+                    <!-- <forkMode>never</forkMode> -->
                     <systemProperties>
                         <property>
                             <name>catalina.base</name>

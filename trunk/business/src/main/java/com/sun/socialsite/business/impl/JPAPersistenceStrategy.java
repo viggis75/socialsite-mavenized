@@ -25,15 +25,12 @@ package com.sun.socialsite.business.impl;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Singleton;
 import com.sun.socialsite.SocialSiteException;
-import java.util.Collection;
-import java.util.Iterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
-import javax.persistence.PersistenceException;
-import javax.persistence.Query;
+
+import javax.persistence.*;
+import java.util.Collection;
+import java.util.Iterator;
 
 
 /**
@@ -104,6 +101,9 @@ public class JPAPersistenceStrategy {
         if (!em.contains(obj)) {
             // If entity is not managed we can assume it is new
             em.persist(obj);
+        }
+        else {
+            obj = em.merge(obj);
         }
         return obj;
     }
