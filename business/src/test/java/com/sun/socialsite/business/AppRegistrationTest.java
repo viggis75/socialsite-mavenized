@@ -39,13 +39,14 @@ import com.sun.socialsite.Utils;
 import com.sun.socialsite.pojos.AppRegistration;
 import com.sun.socialsite.pojos.Profile;
 import com.sun.socialsite.userapi.User;
-import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
+
+import java.util.List;
 
 
 /**
@@ -70,7 +71,7 @@ public class AppRegistrationTest extends TestCase {
      */
     public void testAppRegistration() throws Exception {
         log.info("BEGIN");
-
+        
         // first, we need a developer
         ProfileManager pmgr = Factory.getSocialSite().getProfileManager();
         assertNotNull(pmgr);
@@ -80,7 +81,7 @@ public class AppRegistrationTest extends TestCase {
         Utils.endSession(true);
 
         // and we need an app
-        String appurl = "file:./web/local_gadgets/face.xml";
+        String appurl = "file:./src/test/resources/local_gadgets/face.xml";
 
         try {
             // we'll be testing the app manager today
