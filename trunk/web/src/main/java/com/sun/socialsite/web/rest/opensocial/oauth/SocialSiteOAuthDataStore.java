@@ -41,6 +41,7 @@ import java.util.UUID;
 
 import net.oauth.OAuthConsumer;
 import net.oauth.OAuthServiceProvider;
+import net.oauth.OAuthProblemException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -194,5 +195,38 @@ public class SocialSiteOAuthDataStore implements OAuthDataStore {
             log.debug("Error fetching consumer secret for consumerKey: " + consumerKey, e);
         }
         return null;
+    }
+
+    public OAuthEntry generateRequestToken(String consumerKey, String oauthVersion, String signedCallbackUrl) throws OAuthProblemException {
+        OAuthEntry entry = this.generateRequestToken(consumerKey);
+        entry.callbackUrl = signedCallbackUrl;
+        entry.callbackUrlSigned = true;
+        entry.oauthVersion = oauthVersion;
+        return entry;
+    }
+
+    public void disableToken(OAuthEntry entry) {
+        try {
+            AppManager amgr = Factory.getSocialSite().getAppManager();
+            entry.authorized = false;
+            amgr.saveOAuthEntry(entry);
+            Factory.getSocialSite().flush();
+        }
+        catch (SocialSiteException e) {
+            log.error("ERROR saving OAuthEntry", e);
+        }
+    }
+
+    public void removeToken(OAuthEntry entry) {
+        try {
+            AppManager amgr = Factory.getSocialSite().getAppManager();
+            entry.token = null;
+            amgr.saveOAuthEntry(entry);
+            Factory.getSocialSite().flush();
+        }
+        catch (SocialSiteException e) {
+            log.error("ERROR saving OAuthEntry", e);
+        }
+
     }
 }

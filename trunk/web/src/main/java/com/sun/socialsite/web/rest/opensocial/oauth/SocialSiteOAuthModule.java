@@ -126,7 +126,7 @@ public class SocialSiteOAuthModule extends AbstractModule {
                     String privateKey = IOUtils.toString(ResourceLoader.open(signingKeyFile), "UTF-8");
                     privateKey = BasicOAuthStore.convertFromOpenSsl(privateKey);
                     key = new BasicOAuthStoreConsumerKeyAndSecret(null, privateKey, KeyType.RSA_PRIVATE,
-                            signingKeyName);
+                            signingKeyName, null);
                 } catch (Throwable t) {
                     logger.log(Level.WARNING, "Couldn't load key file " + signingKeyFile, t);
                 }

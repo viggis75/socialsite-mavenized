@@ -193,6 +193,15 @@ public class AssertedToken extends SocialSiteToken {
         return false;
     }
 
+    // TODO: proper implementation
+    public String getAuthenticationMode() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    // TODO: proper implementation
+    public String getActiveUrl() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
     public boolean isForContainerPage() {
         return containerPageFlag;
