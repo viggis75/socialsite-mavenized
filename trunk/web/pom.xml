@@ -1,34 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <artifactId>socialsite</artifactId>
-    <groupId>com.sun</groupId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
+    <parent>
+        <artifactId>socialsite</artifactId>
+        <groupId>com.sun</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
-  <groupId>com.sun.socialsite</groupId>
-  <artifactId>web</artifactId>
+    <groupId>com.sun.socialsite</groupId>
+    <artifactId>web</artifactId>
 
-  <packaging>war</packaging>
+    <packaging>war</packaging>
 
-  <name>web</name>
-  <url>http://maven.apache.org</url>
+    <name>socialsite</name>
+    <url>http://maven.apache.org</url>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-      <dependency>
-          <groupId>com.sun.socialsite</groupId>
-          <artifactId>business</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.socialsite</groupId>
+            <artifactId>business</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-tiles-plugin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>string</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject.integration</groupId>
+            <artifactId>guice-struts2-plugin</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-web</artifactId>
+            <version>1.6.0-beta2</version>
+        </dependency>
+
+    </dependencies>
 </project>
