@@ -149,6 +149,55 @@
                 <scope>compile</scope>
             </dependency>
 
+            <!-- originally known as web.jars in the build.xml -->
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>1.1</version>
+                <type>jar</type>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>taglibs</groupId>
+                <artifactId>string</artifactId>
+                <version>1.1.0</version>
+                <type>jar</type>
+                <scope>compile</scope>
+            </dependency>
+
+            <!-- originally known as struts.jars -->
+            <dependency>
+                <groupId>org.apache.struts</groupId>
+                <artifactId>struts2-core</artifactId>
+                <version>2.0.11</version>
+                <type>jar</type>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.struts</groupId>
+                <artifactId>struts2-tiles-plugin</artifactId>
+                <version>2.0.11</version>
+                <type>jar</type>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.inject.integration</groupId>
+                <artifactId>guice-struts2-plugin</artifactId>
+                <version>1.0</version>
+                <type>jar</type>
+                <scope>compile</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.struts</groupId>
+                        <artifactId>struts2-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>opensymphony</groupId>
+                        <artifactId>xwork</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
             <!-- these jars seem to be required, but I couldn't find a reference to them in the build.xml -->
             <dependency>
                 <groupId>org.apache.ant</groupId>
