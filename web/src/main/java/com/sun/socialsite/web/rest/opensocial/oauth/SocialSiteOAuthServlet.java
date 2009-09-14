@@ -98,7 +98,7 @@ public class SocialSiteOAuthServlet extends InjectedServlet {
         VALIDATOR.validateMessage(requestMessage, accessor);
 
         // generate request_token and secret
-        OAuthEntry entry = dataStore.generateRequestToken(consumerKey);
+        OAuthEntry entry = dataStore.generateRequestToken(consumerKey, null, null);
 
         sendResponse(servletResponse, OAuth.newList(OAuth.OAUTH_TOKEN, entry.token,
                 OAuth.OAUTH_TOKEN_SECRET, entry.tokenSecret));

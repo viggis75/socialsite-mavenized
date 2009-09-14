@@ -27,6 +27,13 @@
         </dependency>
         <dependency>
             <groupId>com.sun.socialsite</groupId>
+            <artifactId>test-utils</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.socialsite</groupId>
             <artifactId>business</artifactId>
             <version>${project.version}</version>
         </dependency>
