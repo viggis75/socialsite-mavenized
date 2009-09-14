@@ -61,7 +61,8 @@ class ExtendedPageInfo extends PageInfo implements Serializable {
      */
     public ExtendedPageInfo(final GenericResponseWrapper resp, final byte[] body, boolean storeGzipped)
             throws AlreadyGzippedException {
-        super(resp.getStatus(), resp.getContentType(), resp.getHeaders(), resp.getCookies(), body, storeGzipped);
+        // super(resp.getStatus(),  , resp.getHeaders(), resp.getCookies(), body, storeGzipped);
+        super(resp.getStatus(), resp.getContentType(),resp.getHeaders(), resp.getCookies(), body, storeGzipped, 0 );
         determineLastModified(resp);
         determineEtag(resp);
     }
@@ -115,7 +116,7 @@ class ExtendedPageInfo extends PageInfo implements Serializable {
      */
     @SuppressWarnings(value="unchecked")
     private String getHeader(String name) {
-        List<String[]> headers = getHeaders();
+        List<String[]> headers = getResponseHeaders();
         for (String[] header : headers) {
             if ((header.length == 2) && (name.equals(header[0]))) {
                 return header[1];

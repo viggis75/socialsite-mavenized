@@ -1,78 +1,314 @@
-/*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- *
- * Copyright 2007-2008 Sun Microsystems, Inc. All rights reserved.
- *
- * The contents of this file are subject to the terms of either the GNU
- * General Public License Version 2 only ("GPL") or the Common Development
- * and Distribution License("CDDL") (collectively, the "License").  You
- * may not use this file except in compliance with the License. You can obtain
- * a copy of the License at https://socialsite.dev.java.net/legal/CDDL+GPL.html
- * or legal/LICENSE.txt.  See the License for the specific language governing
- * permissions and limitations under the License.
- *
- * When distributing the software, include this License Header Notice in each
- * file and include the License file at legal/LICENSE.txt.  Sun designates this
- * particular file as subject to the "Classpath" exception as provided by Sun
- * in the GPL Version 2 section of the License file that accompanied this code.
- * If applicable, add the following below the License Header, with the fields
- * enclosed by brackets [] replaced by your own identifying information:
- * "Portions Copyrighted [year] [name of copyright owner]"
- *
- * Contributor(s):
- *
- * If you wish your version of this file to be governed by only the CDDL or
- * only the GPL Version 2, indicate your decision by adding "[Contributor]
- * elects to include this software in this distribution under the [CDDL or GPL
- * Version 2] license."  If you don't indicate a single choice of license, a
- * recipient has the option to distribute your version of this file under
- * either the CDDL, the GPL Version 2 or to extend the choice of license to
- * its licensees as provided above.  However, if you add GPL Version 2 code
- * and therefore, elected the GPL Version 2 license, then the option applies
- * only if the new code is made subject to such option by the copyright
- * holder.
- */
-
 package com.sun.socialsite.web.rest.model;
 
-import com.sun.socialsite.pojos.Group;
-import com.sun.socialsite.pojos.GroupRequest;
-import com.sun.socialsite.pojos.MessageContent;
-import com.sun.socialsite.pojos.Profile;
-import com.sun.socialsite.pojos.RelationshipRequest;
 import org.apache.shindig.social.opensocial.model.Message;
-import org.apache.shindig.social.opensocial.model.Message.Type;
+import org.apache.shindig.social.opensocial.model.Url;
 import org.json.JSONObject;
 
+import java.util.List;
+import java.util.Date;
+
+import com.sun.socialsite.pojos.RelationshipRequest;
+import com.sun.socialsite.pojos.Profile;
+import com.sun.socialsite.pojos.GroupRequest;
+import com.sun.socialsite.pojos.MessageContent;
+import com.sun.socialsite.business.AppManager;
+import com.sun.socialsite.business.Factory;
+import com.sun.socialsite.business.ProfileManager;
+import com.sun.socialsite.SocialSiteException;
+
 /**
- * Implementation of Opensocial Message interface. This class
- * wraps messages or social requests to be sent to gadgets.
+ * Describe your class here
+ *
+ * @author $Author$
+ *         <p/>
+ *         $Id$
  */
 public class MessageImpl implements Message {
 
-    private final String     id;
-    private final String     body;
-    private final JSONObject group; // see getGroupJson()
-    private final JSONObject sender; // see getProfileJson()
-    private final String     status;
-    private final String     title;
-    private final Type       type;
+    private String body ;
+    private String bodyId = null;
+    private String id;
+    private Profile sender ;
+    private Message.Status status ;
+    private String title;
+    private Message.Type type;
+    private ExtendedType extendedType;
 
-    /** Relationship request level hint */
-    private int level = 2;
-
-    /** Relationship request howknow message */
+    private Integer level = 2;
     private String howknow = null;
 
-    /** SocialSite type */
-    private final ExtendedType extendedType;
+    private String appId = null;
+    private String appUrl = null;
 
-    // create once and use when json data not needed
+    private List<String> collectionIds = null;
+    private List<String> recipients = null;
+    private List<String> replies = null;
+    private String inReplyTo = null;
+    private Date timeSent;
+    private Date updated = null;
+
     private static final JSONObject EMPTY_JSON = new JSONObject();
 
+    private AppManager appManager = Factory.getSocialSite().getAppManager();
+    private ProfileManager profManager = Factory.getSocialSite().getProfileManager();
+
     /**
-     * The type of a message.
+     * Utility constructor for code that doesn't
+     * care about notifications.
+     *
+     * @param content A message content object representing a message
+     *     sent from one person to another.
      */
+    public MessageImpl(MessageContent content) {
+        this(content, false);
+    }
+
+    /**
+     * Constructor that takes a MessageContext object.
+     *
+     * @param content MessageContent object to be wrapped.
+     * @param isGroupInvite If true, tells the class to set type
+     *     to 'notification'
+     */
+    public MessageImpl(MessageContent content, boolean isGroupInvite) {
+        if (isGroupInvite) {
+            this.title = "Invitation to join group " + content.getGroup().getName();
+            this.body = "";            
+            this.type = Type.NOTIFICATION;
+            this.extendedType = ExtendedType.GROUP_INVITE;
+        } else {
+            this.title = content.getSummary();
+            this.body = content.getContent();
+            this.type = Type.NOTIFICATION;
+            this.extendedType = ExtendedType.PRIVATE_MESSAGE;
+        }
+        this.id = content.getId();
+        this.sender = content.getProfile();
+        this.timeSent = content.getUpdated();
+
+        String contentStatus = content.getStatus();
+        if (contentStatus.equals("new"))
+            this.status = Message.Status.NEW;
+        else if (contentStatus.equals("read"))
+            this.status = Message.Status.FLAGGED;
+        else if (contentStatus.equals("deleted"))
+            this.status = Message.Status.DELETED;
+        else
+            this.status = Message.Status.NEW; // TODO is this the right thing to do?
+
+        this.appId = content.getAppId();
+        this.inReplyTo = content.getReplyToId();
+    }
+
+    /**
+     * Constructor that takes a FriendshipRequest object.
+     *
+     * @param request The friendship request to wrap
+     */
+    public MessageImpl(RelationshipRequest request) {
+        Profile fromUser = request.getProfileFrom();
+        this.body = "";
+
+        this.id = request.getId();
+        this.sender = fromUser;
+
+        this.title = "Relationship Request from " + fromUser.getName();
+        this.type = Type.NOTIFICATION;
+        this.extendedType = MessageImpl.ExtendedType.RELATIONSHIP_REQUEST;
+        this.level = request.getLevelTo();
+        this.howknow = request.getHowknow();
+        this.timeSent = request.getCreated();
+
+        String requestStatus = request.getStatus().toString();
+        if (requestStatus.equals("new"))
+            this.status = Message.Status.NEW;
+        else if (requestStatus.equals("read"))
+            this.status = Message.Status.FLAGGED;
+        else if (requestStatus.equals("deleted"))
+            this.status = Message.Status.DELETED;
+        else
+            this.status = Message.Status.NEW; // TODO is this the right thing to do?
+
+    }
+
+    /**
+     * Constructor that takes a GroupRequest object.
+     *
+     * @param request The group request to wrap
+     */
+    public MessageImpl(GroupRequest request) {
+        Profile fromUser = request.getProfileFrom();
+        this.body = "";
+
+        this.id = request.getId();
+        this.sender = fromUser;
+
+        this.title = "Group Membership Request from " + fromUser.getName() +
+                " for group '" + request.getGroup().getName() + "'";
+        this.type = Type.NOTIFICATION;
+        this.extendedType = ExtendedType.GROUP_MEMBERSHIP_REQUEST;
+        this.timeSent = request.getCreated();
+
+        String requestStatus = request.getStatus().toString();
+        if (requestStatus.equals("new"))
+            this.status = Message.Status.NEW;
+        else if (requestStatus.equals("read"))
+            this.status = Message.Status.FLAGGED;
+        else if (requestStatus.equals("deleted"))
+            this.status = Message.Status.DELETED;
+        else
+            this.status = Message.Status.NEW; // TODO is this the right thing to do?
+
+    }
+
+    public String getAppUrl() {
+        if (appUrl == null && appId != null ) {
+            try {
+                return appManager.getApp(appId).getURL().toString();
+            }
+            catch (SocialSiteException sse) {
+                // this is a problem
+                return null;
+            }
+        }
+        else {
+            return appUrl;
+        }
+    }
+
+    public void setAppUrl(String url) {
+        this.appUrl = url;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String newBody) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    public String getBodyId() {
+        return bodyId ; // dude, we just set body to "" everywhere, what the heck ID is it supposed to be
+    }
+
+    public void setBodyId(String bodyId) {
+        this.bodyId = bodyId;
+    }
+
+    public List<String> getCollectionIds() {
+        return collectionIds;
+    }
+
+    public void setCollectionIds(List<String> collectionIds) {
+        this.collectionIds = collectionIds;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getInReplyTo() {
+        return inReplyTo;
+    }
+
+    public void setInReplyTo(String parentId) {
+        this.inReplyTo = parentId;
+    }
+
+    public List<String> getRecipients() {
+        return recipients; // TODO as far as I can tell this will always be null
+    }
+
+    public List<String> getReplies() {
+        return replies;
+    }
+
+    public Status getStatus() {
+        return status;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public void setRecipients(List<String> recipients) {
+        this.recipients = recipients;
+    }
+
+    public String getSenderId() {
+        return sender.getId();  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void setSenderId(String senderId) {
+        try {
+            sender = profManager.getProfile(senderId);
+        }
+        catch (SocialSiteException e) {
+            // hmm, I guess we just leave the sender to what it was
+        }
+
+    }
+
+    public Date getTimeSent() {
+        return timeSent;
+    }
+
+    public void setTimeSent(Date timeSent) {
+        this.timeSent = timeSent;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String newTitle) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    public String getTitleId() {
+        return null;
+    }
+
+    public void setTitleId(String titleId) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type newType) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    public Date getUpdated() {
+        if (updated == null ) {
+            updated = timeSent;
+        }
+        return updated;
+    }
+
+    public void setUpdated(Date updated) {
+        this.updated = updated;
+    }
+
+    public List<Url> getUrls() {
+        return null;
+    }
+
+    public void setUrls(List<Url> urls) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    public String sanitizeHTML(String htmlStr) {
+        return htmlStr;
+    }
+
     public enum ExtendedType {
 
         /** An email. */
@@ -117,228 +353,6 @@ public class MessageImpl implements Message {
             return this.jsonString;
         }
 
-    }
-
-    /**
-     * Utility constructor for code that doesn't
-     * care about notifications.
-     *
-     * @param content A message content object representing a message
-     *     sent from one person to another.
-     */
-    public MessageImpl(MessageContent content) {
-        this(content, false);
-    }
-
-    /**
-     * Constructor that takes a MessageContext object.
-     *
-     * @param content MessageContent object to be wrapped.
-     * @param isGroupInvite If true, tells the class to set type
-     *     to 'notification'
-     */
-    public MessageImpl(MessageContent content, boolean isGroupInvite) {
-        if (isGroupInvite) {
-            this.title = "Invitation to join group " + content.getGroup().getName();
-            this.body = "";
-            this.group = getGroupJson(content.getGroup());
-            this.type = Type.NOTIFICATION;
-            this.extendedType = ExtendedType.GROUP_INVITE;
-        } else {
-            this.title = content.getSummary();
-            this.body = content.getContent();
-            this.group = EMPTY_JSON;
-            this.type = Type.NOTIFICATION;
-            this.extendedType = ExtendedType.PRIVATE_MESSAGE;
-        }
-        this.id = content.getId();
-        this.sender = getProfileJson(content.getProfile());
-        this.status = content.getStatus();
-    }
-
-    /**
-     * Constructor that takes a FriendshipRequest object.
-     *
-     * @param request The friendship request to wrap
-     */
-    public MessageImpl(RelationshipRequest request) {
-        Profile fromUser = request.getProfileFrom();
-        this.body = "";
-        this.group = EMPTY_JSON;
-        this.id = request.getId();
-        this.sender = getProfileJson(fromUser);
-        this.status = request.getStatus().toString();
-        this.title = "Relationship Request from " + fromUser.getName();
-        this.type = Type.NOTIFICATION;
-        this.extendedType = ExtendedType.RELATIONSHIP_REQUEST;
-        this.level = request.getLevelTo();
-        this.howknow = request.getHowknow();
-    }
-
-    /**
-     * Constructor that takes a GroupRequest object.
-     *
-     * @param request The group request to wrap
-     */
-    public MessageImpl(GroupRequest request) {
-        Profile fromUser = request.getProfileFrom();
-        this.body = "";
-        this.group = getGroupJson(request.getGroup());
-        this.id = request.getId();
-        this.sender = getProfileJson(fromUser);
-        this.status = request.getStatus().toString();
-        this.title = "Group Membership Request from " + fromUser.getName() +
-                " for group '" + request.getGroup().getName() + "'";
-        this.type = Type.NOTIFICATION;
-        this.extendedType = ExtendedType.GROUP_MEMBERSHIP_REQUEST;
-    }
-
-    /**
-     * @return Content of MessageContent object;
-     */
-    public String getBody() {
-        return this.body;
-    }
-
-    /**
-     * @return Summary of MessageContent object;
-     */
-    public String getTitle() {
-        return this.title;
-    }
-
-    /**
-     * Returns standard OpenSocial type.
-     * @return Hard coded to 'private' message for now.
-     */
-    public Type getType() {
-        return this.type;
-    }
-
-    /**
-     * Returns SocialSite extended type.
-     * @return the extendedType.
-     */
-    public ExtendedType getExtendedType() {
-        return this.extendedType;
-    }
-
-    // -------------------------------------------------------------------
-    // The following getters are not part of Opensocial Message, but will
-    // be called anyway when this object is converted to a json response.
-    // -------------------------------------------------------------------
-
-    /**
-     * @return The profile url, display name, etc.,  of the
-     * group referenced in the message.
-     */
-    public JSONObject getGroup() {
-        return this.group;
-    }
-
-    /**
-     * @return The ID of the message.
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * @return The profile url, display name, etc.,  of the
-     * user who sent the message.
-     */
-    public JSONObject getSender() {
-        return this.sender;
-    }
-
-    /**
-     * @return The message status, e.g. READ or UNREAD
-     */
-    public String getStatus() {
-        return this.status;
-    }
-
-    // -------------------------------------------------------------------
-    // End public getters added to Message implementation
-    // -------------------------------------------------------------------
-
-    /**
-     * Not supported as this impl class is used for returning data only.
-     */
-    public void setBody(String body) {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    /**
-     * Not supported as this impl class is used for returning data only.
-     */
-    public void setTitle(String title) {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    /**
-     * Not supported as this impl class is used for returning data only.
-     */
-    public void setType(Type type) {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    // See TODO in Message.java interface
-    public String sanitizeHTML(String html) {
-        return html;
-    }
-
-    /**
-     * Relationship request level hint
-     */
-    public int getLevel() {
-        return level;
-    }
-
-    /**
-     * Not supported as this impl class is used for returning data only.
-     */
-    public void setLevel(int level) {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    /**
-     * Relationship request how-know message or null if none
-     */
-    public String getHowknow() {
-        return howknow;
-    }
-
-    /**
-     * Not supported as this impl class is used for returning data only.
-     */
-    public void setHowknow(String howknow) {
-        throw new UnsupportedOperationException("Not supported.");
-    }
-
-    /*
-     * Create a json representation of a user to include
-     * profile URL and display name. This hopefully will
-     * be replaced with an OpenSocial Person object in a
-     * future version of spec.
-     */
-    private JSONObject getProfileJson(Profile profile) {
-        // the case for system notifications
-        if (profile == null) {
-            return null;
-        }
-        return profile.toJSON(Profile.Format.OPENSOCIAL_MINIMAL);
-    }
-
-    /*
-     * Create a json representation of a Group object. It
-     * would be good to have a 'payload' JSON field in Message
-     * for gadget-specific information. In this case, group
-     * invites and join requests need to convey the group's
-     * information to the receiver.
-     */
-    private JSONObject getGroupJson(Group group) {
-        return  group.toJSON(Group.Format.OPENSOCIAL, null);
     }
 
 }
