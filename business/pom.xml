@@ -41,6 +41,12 @@
             <artifactId>derbyclient</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.sun.socialsite</groupId>
+            <artifactId>test-utils</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>log4j</groupId>
@@ -198,7 +204,7 @@
                                 <taskdef name="stopdb" classname="com.sun.socialsite.ant.StopDerbyTask"
                                          classpathref="maven.compile.classpath"/>
                                 <stopdb port="7407"></stopdb>
-                                <delete dir="${project.build.testOutputDirectory}/derby-system" />
+                                <delete dir="${project.build.testOutputDirectory}/derby-system"/>
                             </tasks>
                         </configuration>
                     </execution>
