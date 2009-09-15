@@ -22,12 +22,12 @@
 
 package com.sun.socialsite;
 
-import com.sun.socialsite.pojos.Group;
-import com.sun.socialsite.userapi.User;
-import com.sun.socialsite.userapi.UserManagementException;
 import com.sun.socialsite.business.Factory;
 import com.sun.socialsite.business.startup.Startup;
+import com.sun.socialsite.pojos.Group;
 import com.sun.socialsite.pojos.Profile;
+import com.sun.socialsite.userapi.User;
+import com.sun.socialsite.userapi.UserManagementException;
 
 
 /**
@@ -59,8 +59,8 @@ public final class Utils {
         user.setEmailAddress(email);
         return setupProfile(user, first, last);
     }
-
-    public static User setupUser(String userName)
+    
+    public static User setupUser(String userName) 
             throws UserManagementException {
         User user = new User();
         user.setUserId(userName);
@@ -123,7 +123,7 @@ public final class Utils {
 
     public static void teardownPerson(String userId) throws Exception {
         teardownProfile(userId);
-        teardownUser(userId);
+        teardownUser(userId);        
     }
 
     public static void teardownProfile(String userId) throws Exception {

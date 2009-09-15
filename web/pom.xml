@@ -26,6 +26,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.sun.socialsite</groupId>
             <artifactId>test-utils</artifactId>
             <version>${project.version}</version>
@@ -68,4 +73,41 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <includeEmptyDirs>true</includeEmptyDirs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- <forkMode>never</forkMode> -->
+                    <systemProperties>
+                        <property>
+                            <name>catalina.base</name>
+                            <value>${project.build.testOutputDirectory}</value>
+                        </property>
+                        <property>
+                            <name>context.realpath</name>
+                            <value>${project.build.testOutputDirectory}/web</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+            
+        </plugins>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+        
+    </build>
 </project>
