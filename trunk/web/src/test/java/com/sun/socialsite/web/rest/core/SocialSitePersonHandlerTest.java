@@ -36,34 +36,30 @@
 package com.sun.socialsite.web.rest.core;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.sun.socialsite.Utils;
 import com.sun.socialsite.business.Factory;
-import com.sun.socialsite.business.RelationshipManager;
 import com.sun.socialsite.business.ProfileManager;
+import com.sun.socialsite.business.RelationshipManager;
 import com.sun.socialsite.pojos.App;
 import com.sun.socialsite.pojos.Profile;
 import com.sun.socialsite.web.rest.config.SocialSiteGuiceModule;
-import java.io.StringReader;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Future;
 import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.shindig.protocol.DefaultHandlerRegistry;
-import org.apache.shindig.protocol.HandlerExecutionListener;
-import org.apache.shindig.protocol.HandlerRegistry;
-import org.apache.shindig.protocol.RestHandler;
-import org.apache.shindig.protocol.RestfulCollection;
+import org.apache.shindig.protocol.*;
 import org.apache.shindig.protocol.conversion.BeanJsonConverter;
 import org.apache.shindig.social.opensocial.model.Person;
 import org.apache.shindig.social.opensocial.service.FakeSocialSiteGadgetToken;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.easymock.EasyMock;
 import org.json.JSONObject;
+
+import java.io.StringReader;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
  * Extend Shindig test to test our extensions to the Shindig handler.
@@ -97,8 +93,8 @@ public class SocialSitePersonHandlerTest extends TestCase {
 
         personService = EasyMock.createMock(PersonService.class);
         handler = new PersonHandlerImpl(personService, null, converter);
-        registry = new DefaultHandlerRegistry(null, Sets.<Object>newHashSet(handler), converter,
-            new HandlerExecutionListener.NoOpHandlerExecutionListener());
+        registry = new DefaultHandlerRegistry(null, converter,
+            new HandlerExecutionListener.NoOpHandler());
         
     }
 

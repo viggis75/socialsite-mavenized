@@ -78,7 +78,7 @@ public class OAuthStoreTest extends TestCase {
 
             BasicOAuthStoreConsumerKeyAndSecret keyAndSecret =
                 new BasicOAuthStoreConsumerKeyAndSecret("aaa", "bbb",
-                BasicOAuthStoreConsumerKeyAndSecret.KeyType.HMAC_SYMMETRIC, "keyname");
+                BasicOAuthStoreConsumerKeyAndSecret.KeyType.HMAC_SYMMETRIC, "keyname", null);
 
             store.consumerInfosPut(providerKey, keyAndSecret);
 
