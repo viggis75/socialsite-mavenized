@@ -388,6 +388,8 @@ create table ss_oauthconsumer (
     consumerkey    varchar(48),
     consumersecret varchar(48),
     keytype        varchar(48),
+    callbackurl    varchar(255),
+    version        $db.TIMESTAMP_SQL_TYPE,
     updated        $db.TIMESTAMP_SQL_TYPE not null
 );
 
@@ -397,7 +399,8 @@ create table ss_oauthaccessor (
     tokensecret   varchar(48),
     sessionhandle varchar(48),
     expiremillis  integer,
-    updated      $db.TIMESTAMP_SQL_TYPE not null
+    version       $db.TIMESTAMP_SQL_TYPE,
+    updated       $db.TIMESTAMP_SQL_TYPE not null
 );
 
 
