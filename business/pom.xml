@@ -128,7 +128,7 @@
                         </property>
                         <property>
                             <name>context.realpath</name>
-                            <value>${project.build.testOutputDirectory}/web</value>
+                            <value>${project.basedir}/src/main/webapp</value>
                         </property>
                     </systemProperties>
                 </configuration>
