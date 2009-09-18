@@ -40,6 +40,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.sun.socialsite.Utils;
 import com.sun.socialsite.business.Factory;
+import com.sun.socialsite.business.AppManager;
 import com.sun.socialsite.pojos.App;
 import com.sun.socialsite.pojos.Group;
 import com.sun.socialsite.pojos.Profile;
@@ -75,7 +76,9 @@ public class GroupsHandlerTest extends TestCase {
         converter = injector.getInstance(BeanJsonConverter.class);
 
         Utils.setupSocialSite();
-        List<App> apps = Factory.getSocialSite().getAppManager().getApps(0, 1);
+        AppManager appManager = Factory.getSocialSite().getAppManager();
+        appManager.initialize();
+        List<App> apps = appManager.getApps(0, 1);
         token = new FakeSocialSiteGadgetToken();
         token.setAppId(apps.get(0).getId());
 
