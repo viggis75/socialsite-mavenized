@@ -16,7 +16,7 @@
 
     <packaging>war</packaging>
 
-    <name>socialsite</name>
+    <name>web</name>
     <url>http://maven.apache.org</url>
 
     <dependencies>
