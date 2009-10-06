@@ -187,7 +187,7 @@
                             <tasks>
                                 <taskdef name="startdb" classname="com.sun.socialsite.ant.StartDerbyTask"
                                          classpathref="maven.compile.classpath"/>
-                                <startdb database="${project.build.testOutputDirectory}/derby-system/socialsite"
+                                <startdb database="${project.build.testOutputDirectory}/derby-system/socialsite_business"
                                          port="7407"></startdb>
                             </tasks>
                         </configuration>
@@ -235,7 +235,7 @@
                         </goals>
                         <configuration>
                             <driver>${jdbcDriverClass}</driver>
-                            <url>jdbc:derby://localhost:7407/socialsite;create=true</url>
+                            <url>jdbc:derby://localhost:7407/socialsite_business;create=true</url>
                             <username>app</username>
                             <password>app</password>
                             <autocommit>true</autocommit>
