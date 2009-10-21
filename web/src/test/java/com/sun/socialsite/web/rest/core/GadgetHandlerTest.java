@@ -35,6 +35,7 @@
 
 package com.sun.socialsite.web.rest.core;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -83,7 +84,7 @@ public class GadgetHandlerTest extends TestCase {
         handler = new GadgetHandler();
         registry = new DefaultHandlerRegistry(null, converter,
             new HandlerExecutionListener.NoOpHandler());
-
+		registry.addHandlers(ImmutableSet.<Object> of(handler));
         Utils.setupSocialSite();
     }
 
@@ -115,7 +116,6 @@ public class GadgetHandlerTest extends TestCase {
             assertNotNull(appManager);
 
             johndoe = Utils.setupPerson("john.doe", "John", "Doe", "John.Doe@mycompany.com");
-            Utils.endSession(true);
 
             // Find an existing App (for later use)
             List<App> apps = appManager.getApps(0, 1);
