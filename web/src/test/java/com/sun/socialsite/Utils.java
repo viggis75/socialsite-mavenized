@@ -61,7 +61,7 @@ public final class Utils {
     }
     
     public static User setupUser(String userName) 
-            throws UserManagementException {
+            throws SocialSiteException, UserManagementException {
         User user = new User();
         user.setUserId(userName);
         user.setUserName(userName);
@@ -75,6 +75,7 @@ public final class Utils {
         user.setUserId(userName);
         user.setEnabled(true);
         Factory.getSocialSite().getUserManager().addUser(user);
+        Factory.getSocialSite().flush();
         return user;
     }
 
@@ -87,6 +88,7 @@ public final class Utils {
         profile.setLastName(user.getUserName());
         profile.setPrimaryEmail(user.getEmailAddress());
         Factory.getSocialSite().getProfileManager().saveProfile(profile);
+        Factory.getSocialSite().flush();
         return profile;
     }
 
@@ -96,6 +98,7 @@ public final class Utils {
         group.setHandle(string);
         group.setDescription(string);
         Factory.getSocialSite().getGroupManager().saveGroup(group);
+        Factory.getSocialSite().flush();
         return group;
     }
 
