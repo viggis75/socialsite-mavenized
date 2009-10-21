@@ -35,6 +35,7 @@
 
 package com.sun.socialsite.web.rest.core;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -85,8 +86,9 @@ public class PropertiesHandlerTest extends TestCase {
         token.setAppId(apps.get(0).getId());
 
         handler = new PropertiesHandler();
-        registry = new DefaultHandlerRegistry(null, converter,
+        registry = new DefaultHandlerRegistry(injector, converter,
             new HandlerExecutionListener.NoOpHandler());
+        registry.addHandlers(ImmutableSet.<Object> of(handler));
     }
 
 
@@ -95,7 +97,6 @@ public class PropertiesHandlerTest extends TestCase {
         log.info("BEGIN");
 
         Profile johndoe = Utils.setupPerson("john.doe", "John", "Doe", "John.Doe@mycompany.com");
-
         try {
 
             // Find an existing App (for later use)
