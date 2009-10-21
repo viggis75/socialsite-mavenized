@@ -35,6 +35,7 @@
 
 package com.sun.socialsite.web.rest.core;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -95,7 +96,7 @@ public class SocialSitePersonHandlerTest extends TestCase {
         handler = new PersonHandlerImpl(personService, null, converter);
         registry = new DefaultHandlerRegistry(null, converter,
             new HandlerExecutionListener.NoOpHandler());
-        
+		registry.addHandlers(ImmutableSet.<Object> of(handler));
     }
 
 
