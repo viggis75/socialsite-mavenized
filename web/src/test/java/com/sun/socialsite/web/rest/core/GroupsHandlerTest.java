@@ -35,202 +35,204 @@
 
 package com.sun.socialsite.web.rest.core;
 
-import com.google.common.collect.Maps;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.sun.socialsite.Utils;
-import com.sun.socialsite.business.Factory;
-import com.sun.socialsite.business.AppManager;
-import com.sun.socialsite.pojos.App;
-import com.sun.socialsite.pojos.Group;
-import com.sun.socialsite.pojos.Profile;
-import com.sun.socialsite.web.rest.config.SocialSiteGuiceModule;
+import java.io.StringReader;
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.shindig.protocol.*;
+import org.apache.shindig.protocol.DefaultHandlerRegistry;
+import org.apache.shindig.protocol.HandlerExecutionListener;
+import org.apache.shindig.protocol.HandlerRegistry;
+import org.apache.shindig.protocol.RestHandler;
+import org.apache.shindig.protocol.RestfulCollection;
 import org.apache.shindig.protocol.conversion.BeanJsonConverter;
 import org.apache.shindig.social.opensocial.service.FakeSocialSiteGadgetToken;
 import org.json.JSONObject;
 
-import java.io.StringReader;
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.sun.socialsite.Utils;
+import com.sun.socialsite.business.AppManager;
+import com.sun.socialsite.business.Factory;
+import com.sun.socialsite.pojos.App;
+import com.sun.socialsite.pojos.Group;
+import com.sun.socialsite.pojos.Profile;
+import com.sun.socialsite.web.rest.config.SocialSiteGuiceModule;
 
 /**
  * Extend Shindig test to test our extensions to the Shindig handler.
  */
 public class GroupsHandlerTest extends TestCase {
 
-    public static Log log = LogFactory.getLog(GroupsHandlerTest.class);
+	public static Log log = LogFactory.getLog(GroupsHandlerTest.class);
 
-    private BeanJsonConverter converter;
-    protected GroupsHandler handler;
-    protected FakeSocialSiteGadgetToken token;
-    protected HandlerRegistry registry;
+	private BeanJsonConverter converter;
+	protected GroupsHandler handler;
+	protected FakeSocialSiteGadgetToken token;
+	protected HandlerRegistry registry;
 
+	@Override
+	protected void setUp() throws Exception {
+		Injector injector = Guice.createInjector(new SocialSiteGuiceModule());
+		converter = injector.getInstance(BeanJsonConverter.class);
 
-    @Override
-    protected void setUp() throws Exception {
-        Injector injector = Guice.createInjector(new SocialSiteGuiceModule());
-        converter = injector.getInstance(BeanJsonConverter.class);
+		Utils.setupSocialSite();
+		AppManager appManager = Factory.getSocialSite().getAppManager();
+		appManager.initialize();
+		List<App> apps = appManager.getApps(0, 1);
+		token = new FakeSocialSiteGadgetToken();
+		token.setAppId(apps.get(0).getId());
 
-        Utils.setupSocialSite();
-        AppManager appManager = Factory.getSocialSite().getAppManager();
-        appManager.initialize();
-        List<App> apps = appManager.getApps(0, 1);
-        token = new FakeSocialSiteGadgetToken();
-        token.setAppId(apps.get(0).getId());
+		handler = new GroupsHandler(converter);
+		registry = new DefaultHandlerRegistry(injector, converter,
+				new HandlerExecutionListener.NoOpHandler());
+		registry.addHandlers(ImmutableSet.<Object> of(handler));
+	}
 
-        handler = new GroupsHandler(converter);
-        registry = new DefaultHandlerRegistry(null, converter,
-            new HandlerExecutionListener.NoOpHandler());
-    }
+	public void testGetPublicGroups() throws Exception {
 
+		log.info("BEGIN");
 
-    public void testGetPublicGroups() throws Exception {
+		Profile johndoe = Utils.setupPerson("john.doe", "John", "Doe",
+				"John.Doe@mycompany.com");
+		Group group1 = null;
+		Group group2 = null;
+		Group group3 = null;
 
-        log.info("BEGIN");
+		try {
+			token.setViewerId(johndoe.getUserId());
 
-        Profile johndoe = Utils.setupPerson("john.doe", "John", "Doe", "John.Doe@mycompany.com");
-        Group group1 = null;
-        Group group2 = null;
-        Group group3 = null;
+			String path = "/groups/@public";
+			Map<String, String[]> params = Maps.newHashMap();
+			RestHandler operation = registry.getRestHandler(path, "GET");
+			RestfulCollection collection = (RestfulCollection) operation
+					.execute(params, new StringReader(""), token, converter)
+					.get();
 
-        try {
-            token.setViewerId(johndoe.getUserId());
+			assertEquals(0, collection.getTotalResults());
 
-            String path = "/groups/@public";
-            Map<String, String[]> params = Maps.newHashMap();
-            RestHandler operation = registry.getRestHandler(path, "GET");
-            RestfulCollection collection = (RestfulCollection)
-                operation.execute(params, new StringReader(""), token, converter).get();
+			group1 = Utils.setupGroup("testgroup1");
+			group2 = Utils.setupGroup("testgroup2");
+			group3 = Utils.setupGroup("testgroup3");
+			Utils.endSession(true);
 
-            assertEquals(0, collection.getTotalResults());
+			collection = (RestfulCollection) operation.execute(params,
+					new StringReader(""), token, converter).get();
+			assertNotNull(collection);
 
-            group1 = Utils.setupGroup("testgroup1");
-            group2 = Utils.setupGroup("testgroup2");
-            group3 = Utils.setupGroup("testgroup3");
-            Utils.endSession(true);
+			assertEquals(3, collection.getTotalResults());
+		} finally {
+			if (group1 != null)
+				Utils.teardownGroup(group1.getHandle());
+			if (group2 != null)
+				Utils.teardownGroup(group2.getHandle());
+			if (group3 != null)
+				Utils.teardownGroup(group3.getHandle());
+			if (johndoe != null)
+				Utils.teardownPerson(johndoe.getUserId());
+		}
 
-            collection = (RestfulCollection)
-                operation.execute(params, new StringReader(""), token, converter).get();
-            assertNotNull(collection);
+		log.info("END");
 
-            assertEquals(3, collection.getTotalResults());
+	}
 
-        } finally {
-            if(group1 != null) Utils.teardownGroup(group1.getHandle());
-            if(group2 != null) Utils.teardownGroup(group2.getHandle());
-            if(group3 != null) Utils.teardownGroup(group3.getHandle());
-            if(johndoe != null) Utils.teardownPerson(johndoe.getUserId());
-        }
+	public void testGetAPublicGroup() throws Exception {
 
-        log.info("END");
+		log.info("BEGIN");
 
-    }
+		Profile johndoe = Utils.setupPerson("john.doe", "John", "Doe",
+				"John.Doe@mycompany.com");
+		Group group1 = null;
 
-    
-    public void testGetAPublicGroup() throws Exception {
+		try {
+			// setup path to group (that doesn't exist yet)
+			token.setViewerId(johndoe.getUserId());
 
-        log.info("BEGIN");
+			String path = "/groups/@public/testgroup1";
+			Map<String, String[]> params = Maps.newHashMap();
+			params.put("startIndex", new String[] { "0" });
+			params.put("count", new String[] { "-1" });
+			RestHandler operation = registry.getRestHandler(path, "GET");
 
-        Profile johndoe = Utils.setupPerson(
-            "john.doe", "John", "Doe", "John.Doe@mycompany.com");
-        Group group1 = null;
+			// request group, should throw error
+			boolean notFoundError = false;
+			try {
+				operation.execute(params, new StringReader(""), token,
+						converter).get();
+			} catch (Throwable ex) {
+				notFoundError = true;
+			}
+			assertTrue(notFoundError);
 
-        try {
-            // setup path to group (that doesn't exist yet)
-            token.setViewerId(johndoe.getUserId());
+			// setup group
+			group1 = Utils.setupGroup("testgroup1");
+			Utils.endSession(true);
 
-            String path = "/groups/@public/testgroup1";
-            Map<String, String[]> params = Maps.newHashMap();
-            params.put("startIndex", new String[]{"0"});
-            params.put("count", new String[]{"-1"});
-            RestHandler operation = registry.getRestHandler(path, "GET");
+			// fetch it via handler
+			JSONObject response = (JSONObject) operation.execute(params,
+					new StringReader(""), token, converter).get();
+			assertNotNull(response);
+			assertEquals(group1.getHandle(), response.getString("handle"));
+			assertEquals(group1.toJSON(Group.Format.OPENSOCIAL,
+					token.getViewerId()).toString(), response.toString());
+		} finally {
+			if (group1 != null)
+				Utils.teardownGroup(group1.getHandle());
+			if (johndoe != null)
+				Utils.teardownPerson(johndoe.getUserId());
+		}
 
-            // request group, should throw error
-            boolean notFoundError = false;
-            try {
-                operation.execute(params, new StringReader(""), token, converter).get();
-            } catch (Throwable ex) {
-                notFoundError = true;
-            }
-            assertTrue(notFoundError);
+		log.info("END");
 
-            // setup group
-            group1 = Utils.setupGroup("testgroup1");
-            Utils.endSession(true);
+	}
 
-            // fetch it via handler
-            JSONObject response = (JSONObject)
-                operation.execute(params, new StringReader(""), token, converter).get();
-            assertNotNull(response);
-            assertEquals(group1.getHandle(), response.getString("handle"));
-            assertEquals(group1.toJSON(
-                Group.Format.OPENSOCIAL, token.getViewerId()).toString(), response.toString());
+	/*
+	 * public void testGetUsersGroups() throws Exception {
+	 * 
+	 * log.info("BEGIN");
+	 * 
+	 * Profile johndoe = Utils.setupPerson("john.doe", "John", "Doe",
+	 * "John.Doe@mycompany.com"); Profile janedoe =
+	 * Utils.setupPerson("jane.doe", "Jane", "Doe", "Jane.Doe@mycompany.com");
+	 * Utils.endSession(true); Group group1 = null; Group group2 = null; Group
+	 * group3 = null; Group group4 = null;
+	 * 
+	 * try { token.setViewerId(johndoe.getUserId());
+	 * setPathOperationAndParams("/groups/john.doe", "GET", null, token,
+	 * converter); assertNull(handler.handleItem(request).get());
+	 * token.setViewerId(johndoe.getUserId());
+	 * setPathOperationAndParams("/groups/jane.doe", "GET", null, token,
+	 * converter); assertNull(handler.handleItem(request).get());
+	 * token.setViewerId(johndoe.getUserId()); group1 =
+	 * Utils.setupGroup("testgroup1"); Utils.endSession(true);
+	 * token.setViewerId(janedoe.getUserId()); group2 =
+	 * Utils.setupGroup("testgroup2"); group3 = Utils.setupGroup("testgroup3");
+	 * group4 = Utils.setupGroup("testgroup4");
+	 * token.setViewerId(johndoe.getUserId());
+	 * setPathOperationAndParams("/groups/john.doe", "GET", null, token,
+	 * converter); JSONObject collection = (JSONObject)
+	 * handler.handleItem(request) .get(); assertNotNull(collection); JSONArray
+	 * groupList = collection.getJSONArray("group"); assertEquals(1,
+	 * groupList.length()); assertEquals("testgroup1",
+	 * groupList.getJSONObject(0).getString( "handle"));
+	 * token.setViewerId(janedoe.getUserId());
+	 * setPathOperationAndParams("/groups/jane.doe", "GET", null, token,
+	 * converter); collection = (JSONObject) handler.handleItem(request).get();
+	 * assertNotNull(collection); groupList = collection.getJSONArray("group");
+	 * assertEquals(3, groupList.length()); } finally { if (group1 != null)
+	 * Utils.teardownGroup(group1.getHandle()); if (group2 != null)
+	 * Utils.teardownGroup(group2.getHandle()); if (group3 != null)
+	 * Utils.teardownGroup(group3.getHandle()); if (group4 != null)
+	 * Utils.teardownGroup(group4.getHandle()); if (johndoe != null)
+	 * Utils.teardownPerson(johndoe.getUserId()); if (janedoe != null)
+	 * Utils.teardownPerson(janedoe.getUserId()); }
+	 * 
+	 * log.info("END"); }
+	 */
 
-        } finally {
-            if(group1 != null) Utils.teardownGroup(group1.getHandle());
-            if(johndoe != null) Utils.teardownPerson(johndoe.getUserId());
-        }
-
-        log.info("END");
-
-    }
-
-
-    /*
-    public void testGetUsersGroups() throws Exception {
-
-        log.info("BEGIN");
-
-        Profile johndoe = Utils.setupPerson("john.doe", "John", "Doe", "John.Doe@mycompany.com");
-        Profile janedoe = Utils.setupPerson("jane.doe", "Jane", "Doe", "Jane.Doe@mycompany.com");
-        Utils.endSession(true);
-        Group group1 = null;
-        Group group2 = null;
-        Group group3 = null;
-        Group group4 = null;
-
-        try {
-            token.setViewerId(johndoe.getUserId());
-            setPathOperationAndParams("/groups/john.doe", "GET", null, token, converter);
-            assertNull(handler.handleItem(request).get());
-            token.setViewerId(johndoe.getUserId());
-            setPathOperationAndParams("/groups/jane.doe", "GET", null, token, converter);
-            assertNull(handler.handleItem(request).get());
-            token.setViewerId(johndoe.getUserId());
-            group1 = Utils.setupGroup("testgroup1");
-            Utils.endSession(true);
-            token.setViewerId(janedoe.getUserId());
-            group2 = Utils.setupGroup("testgroup2");
-            group3 = Utils.setupGroup("testgroup3");
-            group4 = Utils.setupGroup("testgroup4");
-            token.setViewerId(johndoe.getUserId());
-            setPathOperationAndParams("/groups/john.doe", "GET", null, token, converter);
-            JSONObject collection = (JSONObject) handler.handleItem(request).get();
-            assertNotNull(collection);
-            JSONArray groupList = collection.getJSONArray("group");
-            assertEquals(1, groupList.length());
-            assertEquals("testgroup1", groupList.getJSONObject(0).getString("handle"));
-            token.setViewerId(janedoe.getUserId());
-            setPathOperationAndParams("/groups/jane.doe", "GET", null, token, converter);
-            collection = (JSONObject) handler.handleItem(request).get();
-            assertNotNull(collection);
-            groupList = collection.getJSONArray("group");
-            assertEquals(3, groupList.length());
-        } finally {
-            if(group1 != null) Utils.teardownGroup(group1.getHandle());
-            if(group2 != null) Utils.teardownGroup(group2.getHandle());
-            if(group3 != null) Utils.teardownGroup(group3.getHandle());
-            if(group4 != null) Utils.teardownGroup(group4.getHandle());
-            if(johndoe != null) Utils.teardownPerson(johndoe.getUserId());
-            if(janedoe != null) Utils.teardownPerson(janedoe.getUserId());
-        }
-
-        log.info("END");
-
-    }*/
 }
-
