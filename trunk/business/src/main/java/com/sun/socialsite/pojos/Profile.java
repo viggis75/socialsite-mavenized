@@ -669,7 +669,7 @@ public class Profile implements Serializable {
                 if (!fmt.equals(Format.OPENSOCIAL_MINIMAL)) {
 
                     // TODO: filter by viewerId vs. visibility
-                    Map<String, ProfileProperty> props = getProperties();
+                    Map<String, ProfileProperty> props = getProperties(); //TODO: See issue7-, properties are not eager/lazyloaded!!
 
                     // for most properties we can auto-convert to JSON hierarchy
                     jo = toJSONHierarchy(props);
