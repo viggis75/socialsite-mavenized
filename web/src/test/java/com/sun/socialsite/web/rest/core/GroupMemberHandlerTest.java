@@ -440,8 +440,9 @@ public class GroupMemberHandlerTest extends TestCase {
 
         try {
             // Jack is group admin
-            jack = pmgr.getProfile(jack.getId());
-            sue = pmgr.getProfile(sue.getId());
+// TODO: Uncomment retrieval of jack and sue's profiles. See issue-7        	
+//            jack = pmgr.getProfile(jack.getId());
+//            sue = pmgr.getProfile(sue.getId());
             group = gmgr.getGroupById(group.getId());
             gmgr.createMembership(group, jack, GroupRelationship.Relationship.ADMIN);
             gmgr.createMembership(group, sue, GroupRelationship.Relationship.MEMBER);
@@ -492,8 +493,9 @@ public class GroupMemberHandlerTest extends TestCase {
 
         try {
             // Jack is group admin
-            jack = pmgr.getProfile(jack.getId());
-            sue = pmgr.getProfile(sue.getId());
+        	// TODO: Uncomment retrieval of jack and sue's profiles. See issue-7      	
+//            jack = pmgr.getProfile(jack.getId());
+//            sue = pmgr.getProfile(sue.getId());
             group = gmgr.getGroupById(group.getId());
             gmgr.createMembership(group, jack, GroupRelationship.Relationship.MEMBER);
             gmgr.createMembership(group, sue, GroupRelationship.Relationship.MEMBER);
