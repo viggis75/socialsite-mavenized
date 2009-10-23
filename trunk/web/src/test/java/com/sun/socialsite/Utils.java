@@ -57,6 +57,7 @@ public final class Utils {
         User user = setupUser(username);
         user.setFullName(first + " " + last);
         user.setEmailAddress(email);
+        Factory.getSocialSite().getUserManager().addUser(user);
         return setupProfile(user, first, last);
     }
     
@@ -72,10 +73,7 @@ public final class Utils {
         user.setTimeZone("America/Los_Angeles");
         user.setCreationDate(new java.util.Date());
         user.setUpdateDate(new java.util.Date());
-        user.setUserId(userName);
         user.setEnabled(true);
-        Factory.getSocialSite().getUserManager().addUser(user);
-        Factory.getSocialSite().flush();
         return user;
     }
 
