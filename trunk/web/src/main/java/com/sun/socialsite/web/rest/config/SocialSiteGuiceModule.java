@@ -127,6 +127,8 @@ public class SocialSiteGuiceModule extends AbstractModule {
 
         //--- bind standard Shindig Social API classes
 
+    	bind(Long.class).annotatedWith(Names.named("org.apache.shindig.serviceExpirationDurationMinutes")).toInstance(60L);
+    	
         bind(HandlerRegistry.class).to(DefaultHandlerRegistry.class);
 
         bind(ParameterFetcher.class).annotatedWith(Names.named("DataServiceServlet"))
