@@ -98,13 +98,15 @@ public final class Startup {
      */
     public static void prepare() throws StartupException {
 
-        // setup mail provider, if configured
-        try {
-            mailProvider = new MailProvider();
-        } catch(StartupException ex) {
-            log.warn("Failed to setup mail provider, continuing anways.\n"+
-                    "Reason: "+ex.getMessage(), ex);
-        }
+// TODO: Uncomment again. Commented out when trying to deploy Socialsite for the first time after mavenizing it. 
+//    	Problems with mail provider, don't have time to look at it now    	
+//        // setup mail provider, if configured
+//        try {
+//            mailProvider = new MailProvider();
+//        } catch(StartupException ex) {
+//            log.warn("Failed to setup mail provider, continuing anways.\n"+
+//                    "Reason: "+ex.getMessage(), ex);
+//        }
 
         try {
             dbProvider = new DatabaseProvider();
