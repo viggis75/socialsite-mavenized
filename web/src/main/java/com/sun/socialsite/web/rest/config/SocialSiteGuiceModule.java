@@ -152,7 +152,7 @@ public class SocialSiteGuiceModule extends AbstractModule {
             AuthenticationHandlerProvider.class);
 
         // Added SocialSite handlers here:
-        bind(new TypeLiteral<Set<Object>>(){}).annotatedWith(Names.named("org.apache.shindig.handlers"))
+        bind(new TypeLiteral<Set<Object>>(){}).annotatedWith(Names.named("org.apache.shindig.protocol.handlers"))
             .toInstance(ImmutableSet.<Object>of(
 
                 // standard Shindig handlers
