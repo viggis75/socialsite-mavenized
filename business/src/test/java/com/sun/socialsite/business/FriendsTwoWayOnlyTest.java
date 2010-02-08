@@ -38,6 +38,8 @@ package com.sun.socialsite.business;
 import com.sun.socialsite.SocialSiteException;
 import com.sun.socialsite.userapi.User;
 import com.sun.socialsite.Utils;
+import com.sun.socialsite.business.impl.JPARelationshipManagerImpl;
+import com.sun.socialsite.config.Config;
 import com.sun.socialsite.pojos.RelationshipRequest;
 import com.sun.socialsite.pojos.Profile;
 import java.util.List;
@@ -54,11 +56,11 @@ import org.apache.commons.logging.LogFactory;
 public class FriendsTwoWayOnlyTest extends TestCase {
 
     protected boolean twoWayOnly = true;
-
+    
     public static Log log = LogFactory.getLog(FriendsTwoWayOnlyTest.class);
 
-    // Assuming friendship level is 2
-    public static int FRIENDSHIP_LEVEL = 2;
+    public static int FRIENDSHIP_LEVEL = Config.getIntProperty(
+    "socialsite.relationship.friendshiplevel");;
 
     // Assuming 
 
