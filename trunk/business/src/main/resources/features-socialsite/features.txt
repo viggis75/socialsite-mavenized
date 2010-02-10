@@ -1,0 +1,2 @@
+# List each feature you want to support here
+features-socialsite/socialsite-0.1/feature.xml
