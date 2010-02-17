@@ -316,11 +316,12 @@
         <servlet-class>com.sun.socialsite.web.rest.servlets.GadgetizerDataServlet</servlet-class>
     </servlet>
 
-    <!-- Old and deprecated SocailSite REST API -->
+    <!-- Old and deprecated SocailSite REST API 
     <servlet>
         <servlet-name>socialdata</servlet-name>
         <servlet-class>com.sun.socialsite.web.rest.opensocial.deprecated.SocialSiteGadgetDataServlet</servlet-class>
     </servlet>
+-->
     
     <!-- Shindig: Render a Gadget -->
     <servlet>
@@ -451,6 +452,7 @@
         <url-pattern>/social/rpc/*</url-pattern>
     </servlet-mapping>
 
+<!-- is this right?
     <servlet-mapping>
         <servlet-name>socialdata</servlet-name>
         <url-pattern>/gadgets/social/data/rest/*</url-pattern>
@@ -460,7 +462,7 @@
         <servlet-name>socialdata</servlet-name>
         <url-pattern>/gadgets/social/data/*</url-pattern>
     </servlet-mapping>
-
+-->
     <servlet-mapping>
         <servlet-name>gadgetizerdata</servlet-name>
         <url-pattern>/gadgetizerdata</url-pattern>
@@ -549,7 +551,7 @@
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
-
+    
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
         <welcome-file>index.html</welcome-file>
