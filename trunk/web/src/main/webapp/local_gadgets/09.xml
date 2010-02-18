@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Gadget09" author_email="viggo.navarsete@gmail.com"
+description="A 0.9 compliant test gadget">
+    <Require feature="opensocial-0.9" />
+    <Require feature="dynamic-height" />
+    <Require feature="osapi" />
+  </ModulePrefs>
+  <Content type="html"><![CDATA[
+
+<!-- Fetch a person and friends code for OpenSocial 0.9 -->
+<div>
+  <button onclick='fetchPeople();'>Fetch people and friends</button>
+  <div>
+    <span id='viewer'></span>
+    <ul id='friends'></ul>
+  </div>
+</div>
+<script type='text/javascript'>
+function fetchPeople() {
+  var batch = osapi.newBatch().
+      add('viewer', osapi.people.getViewer()).
+      add('friends', osapi.people.get({userId: '@viewer', groupId:
+'@friends'}));
+  batch.execute(function(result) {
+    document.getElementById('viewer').innerHTML = result.viewer.id;
+    var friends = result.friends.list;
+    for (var i = 0; i < friends.length; i++) {
+      document.getElementById('friends').innerHTML += '<li>' + friends[i].id
++ '</li>';
+    }
+    gadgets.window.adjustHeight();
+  });
+}
+</script>
+<!-- Posting activity code for OpenSocial 0.9 -->
+<div>
+  <input type='text' id='title' />
+  <button onclick='postActivity();'>Post activity</button>
+  <div id='result_activity'></div>
+</div>
+<script type='text/javascript'>
+function postActivity() {
+  var title = document.getElementById('title').value;
+  var req = osapi.activities.create({activity: {title: title}});
+  req.execute(function(response) {
+    if (response.error) {
+      document.getElementById('result_activity').innerHTML =
+response.error.message;
+    } else {
+      document.getElementById('result_activity').innerHTML = 'Succeeded!';
+    }
+    gadgets.window.adjustHeight();
+  });
+}
+</script>
+<!-- Sharing appdata with friends for OpenSocial 0.9 -->
+<div>
+  <input type='text' id='content' />
+  <button onclick='shareData();'>Share data</button>
+  <button onclick='fetchFriendData();'>Fetch friend's data</button>
+  <div id='result_appdata'></div>
+  <ul id='contents'></ul>
+</div>
+<script type='text/javascript'>
+function shareData() {
+  var content = document.getElementById('content').value;
+  var req = osapi.appdata.update({userId: '@viewer', data: {content:
+content}});
+  req.execute(function(response) {
+    if (response.error) {
+      document.getElementById('result_appdata').innerHTML =
+response.error.message;
+    } else {
+      document.getElementById('result_appdata').innerHTML = 'Succeeded!';
+    }
+    gadgets.window.adjustHeight();
+  });
+}
+function fetchFriendData() {
+  var req = osapi.appdata.get({userId: '@viewer', groupId: '@friends', keys:
+['content']});
+  req.execute(function(response) {
+    for (var id in response) {
+      var obj = response[id];
+      document.getElementById('contents').innerHTML
+          += '<li>' + id + ': ' + obj['content'] + '</li>';
+    }
+    gadgets.window.adjustHeight();
+  });
+}
+</script>
+  ]]></Content>
+</Module>
