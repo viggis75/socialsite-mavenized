@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>socialsite</artifactId>
+        <groupId>com.sun</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>com.sun.socialsite</groupId>
+    <artifactId>web</artifactId>
+
+    <packaging>war</packaging>
+
+    <name>web</name>
+    <url>http://maven.apache.org</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>simple-jndi</groupId>
+            <artifactId>simple-jndi</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbyclient</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.socialsite</groupId>
+            <artifactId>test-utils</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.socialsite</groupId>
+            <artifactId>business</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts2-tiles-plugin</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>string</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-jsp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>string</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject.integration</groupId>
+            <artifactId>guice-struts2-plugin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-web</artifactId>
+            <version>1.6.0-beta2</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <!-- TODO : They don't solve mail-jndi problem
+                <dependency>
+                        <groupId>org.eclipse.jetty</groupId>
+                        <artifactId>jetty-jndi</artifactId>
+                        <version>${jetty.version}</version>
+                </dependency>
+                <dependency>
+                        <groupId>org.eclipse.jetty</groupId>
+                        <artifactId>jetty-plus</artifactId>
+                        <version>${jetty.version}</version>
+                </dependency>
+                 -->
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <includeEmptyDirs>true</includeEmptyDirs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- <forkMode>never</forkMode> -->
+                    <systemProperties>
+                        <property>
+                            <name>catalina.base</name>
+                            <value>${project.build.testOutputDirectory}</value>
+                        </property>
+                        <property>
+                            <name>context.realpath</name>
+                            <value>${project.basedir}/src/main/webapp</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.velocity</groupId>
+                        <artifactId>velocity</artifactId>
+                        <version>1.5</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.sun.socialsite</groupId>
+                        <artifactId>test-utils</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
+
+                <executions>
+                    <execution>
+                        <id>gen-db-scripts</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+
+                                <taskdef name="texen" classname="org.apache.velocity.texen.ant.TexenTask"
+classpathref="maven.compile.classpath" />
+
+                                <texen controlTemplate="control.vm"
+contextProperties="${project.build.outputDirectory}/sql/dbscripts.properties"
+templatePath="${project.build.outputDirectory}/sql"
+outputDirectory="${project.build.outputDirectory}/sql"
+outputFile="README.txt" />
+
+                            </tasks>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>startdb</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <taskdef name="startdb" classname="com.sun.socialsite.ant.StartDerbyTask"
+classpathref="maven.compile.classpath" />
+                                <startdb
+                                    database="${project.build.testOutputDirectory}/derby-system/socialsite_web"
+                                    port="7408"></startdb>
+                            </tasks>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>stopdb</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <taskdef name="stopdb" classname="com.sun.socialsite.ant.StopDerbyTask"
+classpathref="maven.compile.classpath" />
+                                <stopdb port="7408"></stopdb>
+                                <delete dir="${project.build.testOutputDirectory}/derby-system" />
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sql-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.derby</groupId>
+                        <artifactId>derby</artifactId>
+                        <version>${derby.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.derby</groupId>
+                        <artifactId>derbyclient</artifactId>
+                        <version>${derby.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>initdb</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <driver>${jdbcDriverClass}</driver>
+                            <url>jdbc:derby://localhost:7408/socialsite_web;create=true</url>
+                            <username>app</username>
+                            <password>app</password>
+                            <autocommit>true</autocommit>
+                            <srcFiles>
+                                <srcFile>${project.build.outputDirectory}/sql/derby/createdb.sql</srcFile>
+                            </srcFiles>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+<!-- EXPERIMENTAL : Activate this to deploy to remote (running) jetty 
+<plugin>
+                                <groupId>org.codehaus.cargo</groupId>
+                                <artifactId>cargo-maven2-plugin</artifactId>
+                                <version>${cargo.version}</version>
+                                <configuration>
+
+                                  <container>
+                                                <containerId>jetty6x</containerId>
+                                                <type>remote</type>
+
+                                                <dependencies>
+                                                        <dependency>
+                                                                <groupId>mysql</groupId>
+                                                                <artifactId>mysql-connector-java</artifactId>
+                                                        </dependency>
+                                                </dependencies>
+
+                                  </container>
+
+                                  <configuration>
+                                                <type>runtime</type>
+
+                                                <properties>
+                                                        <cargo.hostname>localhost</cargo.hostname>
+                                                        <cargo.servlet.port>8080</cargo.servlet.port>
+                                                        <cargo.remote.username>
+                                                            admin
+                                                        </cargo.remote.username>
+                                                        <cargo.remote.password>
+                                                            admin
+                                                        </cargo.remote.password>
+                                                        <cargo.logging>high</cargo.logging>
+
+                                                </properties>
+
+                                  </configuration>
+
+
+                                <deployer>
+                                    <type>remote</type>
+                                        <deployables>
+                                            <deployable>
+                                                <groupId>com.sun.socialsite</groupId>
+                                                <artifactId>web</artifactId>
+                                                <type>war</type>
+                                                <properties>
+                                                    <context>socialsite</context>
+                                                </properties>
+
+                                            </deployable>
+
+                                        </deployables>
+                                </deployer>
+
+                                </configuration>
+                        </plugin>
+-->
+
+
+
+<!-- Activate this for embedded jetty -->
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
+                <version>${jetty.version}</version>
+                <configuration>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <jettyEnvXml>src/main/webapp/META-INF/jetty-env.xml</jettyEnvXml>
+                    <userRealms>
+                        <userRealm implementation="org.mortbay.jetty.security.HashUserRealm">
+                            <name>SocialSite_UserRealm</name>
+                            <config>src/main/webapp/META-INF/jetty_UserRealm.properties</config>
+                        </userRealm>
+                        <!--TODO:Change here -->
+                        <userRealm implementation="org.mortbay.jetty.security.HashUserRealm">
+                            <name>SocialSite_AdminRealm</name>
+                            <config>src/main/webapp/META-INF/jetty_UserRealm.properties</config>
+                        </userRealm>
+                    </userRealms>
+                    <requestLog implementation="org.mortbay.jetty.NCSARequestLog">
+                        <filename>yyyy_mm_dd.request.log</filename>
+                        <retainDays>90</retainDays>
+                        <append>true</append>
+                        <extended>false</extended>
+                        <logTimeZone>GMT</logTimeZone>
+                    </requestLog>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>start-jetty</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <scanIntervalSeconds>0</scanIntervalSeconds>
+                            <daemon>true</daemon>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>stop-jetty</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+
+
+        </plugins>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <profiles>
+
+        <profile>
+            <id>openjpa</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.openjpa</groupId>
+                    <artifactId>openjpa</artifactId>
+                </dependency>
+            </dependencies>
+            <properties>
+                <jpaProviderClass>org.apache.openjpa.persistence.PersistenceProviderImpl</jpaProviderClass>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>openjpa-enhance</id>
+                                <phase>process-classes</phase>
+                                <configuration>
+                                    <tasks>
+                                        <taskdef name="openjpac" classname="org.apache.openjpa.ant.PCEnhancerTask"
+classpathref="maven.compile.classpath" />
+                                        <openjpac enforcePropertyRestrictions="false">
+                                            <classpath refid="maven.compile.classpath" />
+                                        </openjpac>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>derby-db</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.derby</groupId>
+                    <artifactId>derby</artifactId>
+                </dependency>
+            </dependencies>
+            <properties>
+                <jdbcDriverClass>org.apache.derby.jdbc.ClientDriver</jdbcDriverClass>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>cargo-debug</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven2-plugin</artifactId>
+                        <version>${cargo.version}</version>
+                        <configuration>
+                            <configuration>
+                                <properties>
+                                    <cargo.jvmargs><![CDATA[-Xdebug -Xrunjdwp:transport=dt_socket,address=15102,server=y,suspend=y]]></cargo.jvmargs>
+                                </properties>
+                            </configuration>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+
+
+
+    </profiles>
+
+    <properties>
+        <cargo.version>1.0-beta-1</cargo.version>
+        <jetty.version>6.1.22</jetty.version>
+    </properties>
+
+</project>
