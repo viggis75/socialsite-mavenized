@@ -19,8 +19,16 @@ package com.sun.socialsite.web.rest.opensocial.oauth;
 
 import com.google.inject.Inject;
 
-import net.oauth.*;
 import net.oauth.server.OAuthServlet;
+import net.oauth.OAuth;
+import net.oauth.OAuthAccessor;
+import net.oauth.OAuthConsumer;
+import net.oauth.OAuthException;
+import net.oauth.OAuthMessage;
+import net.oauth.OAuthProblemException;
+import net.oauth.OAuthValidator;
+import net.oauth.SimpleOAuthValidator;
+
 import org.apache.shindig.common.servlet.InjectedServlet;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.apache.shindig.social.opensocial.oauth.OAuthDataStore;
