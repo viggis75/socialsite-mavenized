@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <display-name>SocialSite Sample Application</display-name>
+
+  <!-- (Disabled until we decide how to handle redirection settings)
+    <filter>
+        <filter-name>RedirectorFilter</filter-name>
+        <filter-class>com.sun.socialsite.web.filters.RedirectorFilter</filter-class>
+    </filter>
+  -->
+
+    <filter>
+        <filter-name>struts2</filter-name>
+        <filter-class>org.apache.struts2.dispatcher.FilterDispatcher</filter-class>
+    </filter>
+
+  <!-- (Disabled until we decide how to handle redirection settings)
+    <filter-mapping>
+        <filter-name>RedirectorFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+  -->
+
+    <!--
+      * For now, we need to be careful to just map the Struts2 filter
+      * to paths that will contain _only_ Struts actions.  We may be
+      * able to remove this restriction later by implementing our own
+      * Struts ActionMapper.
+     -->
+    <filter-mapping>
+        <filter-name>struts2</filter-name>
+        <url-pattern>/app-ui/login</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>struts2</filter-name>
+        <url-pattern>/app-ui/logout</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>struts2</filter-name>
+        <url-pattern>/app-ui/core/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>struts2</filter-name>
+        <url-pattern>/app-ui/raw/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>struts2</filter-name>
+        <url-pattern>/selfregistration/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+
+    <listener>
+        <listener-class>com.samplesocialsiteapplication.web.listeners.ContextListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.apache.tiles.web.startup.TilesListener</listener-class>
+    </listener>
+<!-- -->
+    <resource-ref>
+        <res-ref-name>jdbc/SocialSite_DB</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
+
+    <resource-ref>
+        <res-ref-name>mail/SocialSite/Session</res-ref-name>
+        <res-type>javax.mail.Session</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+    <security-constraint>
+        <display-name>app-ui</display-name>
+        <web-resource-collection>
+            <web-resource-name>app-ui</web-resource-name>
+            <url-pattern>/app-ui/core/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>user</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <!-- Constraint to define SSL on login page -->
+  <!-- (Disabled until we decide how to handle redirection settings)
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>login</web-resource-name>
+            <url-pattern>/app-ui/login</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+  -->
+
+    <security-role>
+        <description/>
+        <role-name>user</role-name>
+    </security-role>
+
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <realm-name>SocialSite_UserRealm</realm-name>
+        <form-login-config>
+            <form-login-page>/app-ui/login</form-login-page>
+            <form-error-page>/app-ui/login?failed=true</form-error-page>
+        </form-login-config>
+    </login-config>
+
+</web-app>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN" "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+
+    <definition name=".core-basepage" template="/WEB-INF/jsps/tiles/core/tiles-basepage.jsp">
+        <put-attribute name="menu"    value="/WEB-INF/jsps/tiles/core/menu.jsp" />
+        <put-attribute name="sidebar" value="/WEB-INF/jsps/tiles/core/sidebar.jsp" />
+        <put-attribute name="content" value="${content}" />
+    </definition>
+
+    <!-- Self Registration Pages -->
+
+    <definition name=".SelfRegistration" extends=".core-basepage" >
+        <put-attribute name="content" value="/WEB-INF/jsps/SelfRegistration.jsp" />
+    </definition>
+
+    <definition name=".SelfRegistrationDone" extends=".core-basepage" >
+        <put-attribute name="content" value="/WEB-INF/jsps/SelfRegistrationDone.jsp" />
+    </definition>
+
+    <!-- Core pages -->
+
+    <definition name=".Login" extends=".core-basepage" >
+        <put-attribute name="content" value="/WEB-INF/jsps/login.jsp" />
+    </definition>
+
+    <definition name=".Logout" template="/WEB-INF/jsps/logout.jsp">
+    </definition>
+
+    <definition name=".Error" extends=".core-basepage" >
+        <put-attribute name="content" value="/WEB-INF/jsps/core/Error.jsp" />
+    </definition>
+
+    <definition name=".Home" extends=".core-basepage" >
+        <put-attribute name="content" value="/WEB-INF/jsps/core/Home.jsp" />
+    </definition>
+
+    <definition name=".GroupView" extends=".core-basepage" >
+        <put-attribute name="content" value="/WEB-INF/jsps/core/GroupView.jsp" />
+    </definition>
+
+    <definition name=".ProfileView" extends=".core-basepage" >
+        <put-attribute name="content" value="/WEB-INF/jsps/core/ProfileView.jsp" />
+    </definition>
+
+</tiles-definitions>

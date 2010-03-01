@@ -1,0 +1,130 @@
+
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+
+<struts>
+
+    <!--
+    <constant name="struts.objectFactory" value="guice" />
+    -->
+
+    <!-- Base package space -->
+    <package name="SampleSocialsiteApplication" namespace="/app-ui" extends="struts-default">
+
+        <!-- Define Tiles result type -->
+        <result-types>
+            <result-type name="tiles" class="org.apache.struts2.views.tiles.TilesResult" />
+        </result-types>
+        
+
+<!--   -->
+        <interceptors>
+            <interceptor name="socialsite-session-context" class="com.samplesocialsiteapplication.web.ui.core.struts2.SessionContextInterceptor"/>
+            <interceptor-stack name="socialsite-stack-default">
+                <interceptor-ref name="exception"/>
+                <interceptor-ref name="alias"/>
+                <interceptor-ref name="servletConfig"/>
+                <interceptor-ref name="i18n"/>
+                <interceptor-ref name="chain"/>
+                <interceptor-ref name="debugging"/>
+                <interceptor-ref name="profiling"/>
+                <interceptor-ref name="scopedModelDriven"/>
+                <interceptor-ref name="modelDriven"/>
+
+                <interceptor-ref name="checkbox"/>
+                <interceptor-ref name="socialsite-session-context"/>
+                <interceptor-ref name="staticParams"/>
+                <interceptor-ref name="params">
+                    <param name="excludeParams">dojo\..*</param>
+                </interceptor-ref>
+                <interceptor-ref name="prepare"/>
+                <interceptor-ref name="conversionError"/>
+                <interceptor-ref name="validation">
+                    <param name="excludeMethods">input,back,cancel,browse</param>
+                </interceptor-ref>
+                <interceptor-ref name="workflow">
+                    <param name="excludeMethods">input,back,cancel,browse</param>
+                </interceptor-ref>
+            </interceptor-stack>
+        </interceptors>
+
+     
+
+<!--
+<action name="login" class="com.samplesocialsiteapplication.web.ui.core.struts2.Login">
+            <result name="ok">/jsps/login.jsp</result>
+        </action>
+        
+</package>
+
+    -->
+<action name="login" class="com.samplesocialsiteapplication.web.ui.core.struts2.Login">
+            <result type="tiles">.Login</result>
+            <param name="pageTitle">Login.pageTitle</param>
+        </action>
+
+        <action name="logout" class="com.samplesocialsiteapplication.web.ui.core.struts2.DefaultAction">
+            <result type="tiles">.Logout</result>
+            <param name="pageTitle">Logout.pageTitle</param>
+        </action>
+    </package>
+
+
+    <!-- Self Registration pages -->
+   
+    <package name="selfregistration" namespace="/selfregistration" extends="SampleSocialsiteApplication">
+        <action name="SelfRegistration" class="com.samplesocialsiteapplication.web.ui.core.struts2.SelfRegistration">
+            <result name="input" type="tiles">.SelfRegistration</result>
+            <result name="success" type="redirectAction">
+                <param name="actionName">SelfRegistrationDone</param>
+            </result>
+        </action>
+        <action name="SelfRegistrationDone" class="com.samplesocialsiteapplication.web.ui.core.struts2.DefaultAction">
+            <result type="tiles">.SelfRegistrationDone</result>
+            <param name="pageTitle">SelfRegistrationDone.pageTitle</param>
+        </action>
+    </package>
+<!-- -->
+
+
+    <!-- Core pages -->
+   
+    <package name="socialsite-core" namespace="/app-ui/core" extends="SampleSocialsiteApplication">
+
+        <default-interceptor-ref name="socialsite-stack-default"/>
+
+        <action name="" class="com.samplesocialsiteapplication.web.ui.core.struts2.DefaultAction">
+            <result type="tiles">.Home</result>
+            <param name="pageTitle">Home.pageTitle</param>
+        </action>
+
+        <action name="Error" class="com.samplesocialsiteapplication.web.ui.core.struts2.DefaultAction">
+            <result type="tiles">.Error</result>
+            <param name="pageTitle">Error.pageTitle</param>
+        </action>
+
+        <action name="profile" class="com.samplesocialsiteapplication.web.ui.core.struts2.ProfileView">
+            <result name="input" type="tiles">.ProfileView</result>
+            <result name="success" type="redirectAction">
+                <param name="actionName">profile</param>
+            </result>
+        </action>
+
+        <action name="person/*" class="com.samplesocialsiteapplication.web.ui.core.struts2.ProfileView">
+            <param name="encodedOwnerId">{1}</param>
+            <result name="input" type="tiles">.ProfileView</result>
+            <result name="success" type="redirectAction">
+                <param name="actionName">profile</param>
+            </result>
+        </action>
+
+        <action name="group/*" class="com.samplesocialsiteapplication.web.ui.core.struts2.GroupView">
+            <param name="encodedGroupHandle">{1}</param>
+            <result name="input" type="tiles">.GroupView</result>
+            <result name="success" type="tiles">.GroupView</result>
+        </action>
+
+    </package>
+ <!-- -->
+</struts>
