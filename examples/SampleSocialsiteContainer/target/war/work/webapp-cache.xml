@@ -7,7 +7,6 @@
           <string>sampledata/canonicaldb.json</string>
           <string>WEB-INF/web.xml</string>
           <string>container/gadgets.css</string>
-          <string>container/rpc.js</string>
           <string>container/util.js</string>
           <string>container/sample-pubsub.html</string>
           <string>container/sample3.html</string>
@@ -15,8 +14,10 @@
           <string>container/sample1.html</string>
           <string>container/rpctest_gadget.xml</string>
           <string>container/cookies.js</string>
+          <string>container/sample_socialsite1.html</string>
           <string>container/Bridge.swf</string>
           <string>container/sample7.html</string>
+          <string>container/sample_socialsite2.html</string>
           <string>container/sample6.html</string>
           <string>container/sample4.html</string>
           <string>container/osapi.js</string>

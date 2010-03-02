@@ -41,7 +41,7 @@ shindig.samplecontainer = {};
 
   // TODO: This is gross, it needs to use the config just like the gadget js does
   var socialDataPath = document.location.protocol + "//" + document.location.host
-    + "/social/rest/samplecontainer/";
+    + "/socialsite/social/rest/samplecontainer/";
 
   var gadgetUrlMatches = /[?&]url=((?:[^#&]+|&amp;)+)/.exec(parentUrl);
   var gadgetUrl = (gadgetUrlMatches)
@@ -154,7 +154,7 @@ shindig.samplecontainer = {};
       // Shindigs rpc code uses direct javascript calls when running on the same domain
       // to simulate cross-domain when running sample container we replace 
       // 'localhost' with '127.0.0.1' 
-      var iframeBaseUrl = baseUrl.replace("localhost", "127.0.0.1") + '../../';
+      var iframeBaseUrl = baseUrl.replace("localhost", "127.0.0.1") + '../../socialsite/';
 
       gadget.setServerBase(iframeBaseUrl);
       gadget.secureToken = escape(generateSecureToken());
@@ -195,7 +195,7 @@ shindig.samplecontainer = {};
       }]
     };
 
-    sendRequestToServer("/gadgets/metadata", "POST",
+    sendRequestToServer("/socialsite/gadgets/metadata", "POST",
         gadgets.json.stringify(request), opt_callback, true);
   }
 
